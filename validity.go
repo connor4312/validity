@@ -2,6 +2,8 @@ package validity
 
 import (
 	"github.com/fatih/structure"
+	"strings"
+	"reflect"
 )
 
 // ValidationRules is a map of strings to slices of things. The keys of the map should be the field names to validate,
@@ -70,10 +72,45 @@ type ValidationResults struct {
 	Data map[string]interface{}
 }
 
+func inferValidationType(t interface{}) string {
+	switch reflect.TypeOf(t).Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint32, reflect.Uint64:
+		return "Int"
+	case reflect.Float32, reflect.Float64:
+		return "Float"
+	default:
+		return "String"
+	}
+}
+
 // This function converts the struct into a map, then runs ValidateMap() on it. See ValidateMap's documentation for
 // usage details.
 func ValidateStruct(s interface{}, rules ValidationRules) *ValidationResults {
 	return ValidateMap(structure.Map(s), rules)
+}
+
+func ValidateStructTags(s interface{}) *ValidationResults {
+	input := structure.New(s)
+	rules := ValidationRules{}
+	data  := map[string]interface{}{}
+
+	fields := input.Fields()
+
+	for _, field := range fields {
+		name := field.Name()
+		val  := field.Value()
+
+		tag := field.Tag("validators")
+		rules[name] = []string{inferValidationType(val)}
+
+		if tag != "" {
+			rules[name] = append(rules[name], strings.Split(tag, " and ")...)
+		}
+
+		data[name] = val
+	}
+
+	return ValidateMap(data, rules)
 }
 
 // Validates a map against a set of rules. "Data" is obviously a map of string keys to mixed type values, while rules

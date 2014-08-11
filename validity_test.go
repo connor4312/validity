@@ -10,6 +10,13 @@ type TestStruct struct {
 	Baz float32
 }
 
+
+type TestStructTags struct {
+	Foo string 	`validators:"between:4,5 and email"`
+	Bar int		`validators:"digits:3"`
+	Baz float32
+}
+
 func TestValidatesMap(t *testing.T) {
 	var v interface {}
 	v = "42"
@@ -32,6 +39,18 @@ func TestValidatesStruct(t *testing.T) {
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
 		t.Errorf("Does not validate a basic struct of data!")
+	}
+}
+
+func TestValidatesStructTags(t *testing.T) {
+	data := TestStructTags{Foo: "NotAnEmail", Bar: 123}
+
+	results := ValidateStructTags(data)
+	if results.IsValid ||
+		results.Errors["Foo"][0] != "Between" ||
+		len(results.Errors["Foo"]) != 2 ||
+		len(results.Errors["Bar"]) != 0 {
+		t.Errorf("Does not validate a basic struct of data! Results: %s", results)
 	}
 }
 

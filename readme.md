@@ -38,11 +38,29 @@ if !results.IsValid {
 
 ### Usage
 
+#### Basic Maps/Structs
+
 ValidationRules, passed into ValidateMap or ValidateStruct, is a map of strings to slices of "things". The keys of the map should be the field names to validate, in the struct or map of input given. The values should be slices of validators to run. For example:
 
 ```go
 rules := ValidationRules{"username": []string{"String", "required", "between: 4, 30"}}
 ```
+
+#### Tagged Structs
+
+You may also declare your rules as structure tags, in a field `validators`. Each rule should be seperated by ` and `, like so:
+
+```go
+type TestStructTags struct {
+	Foo string 	`validators:"between:4,5 and email"`
+	Bar int		`validators:"digits:3"`
+	Baz float32
+}
+
+results := ValidateStructTags(TestSTructTags{})
+```
+
+#### Built-In Rules
 
 ... would ensure the "username" is present and between four and 30 characters long. The first element of the map MUST be a value of the type to convert to. Any numeric or string type is valid. If the value cannot be converted to the given type, then it fails validation. The available types are: Int, String, Float.
 
