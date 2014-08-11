@@ -48,6 +48,9 @@ func (c *ValidityQueue) RunParsers() {
 		item, exists := c.Data[key]
 
 		if !exists {
+			if inSlice("required", validator) {
+				c.AddError(key, "required")
+			}
 			continue
 		}
 

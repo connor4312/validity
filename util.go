@@ -49,3 +49,15 @@ func callIn(m interface{}, name string, params ... interface{}) (result []reflec
 	result = f.MethodByName(name).Call(in)
 	return result, nil
 }
+
+// Checks to see if the given string appears in the slice.
+func inSlice(a string, list []string) bool {
+	a = strings.ToLower(a)
+
+	for _, b := range list {
+		if strings.ToLower(b) == a {
+			return true
+		}
+	}
+	return false
+}

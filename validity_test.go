@@ -55,6 +55,26 @@ func TestHandlesInvalidTypeConversions(t *testing.T) {
 	}
 }
 
+func TestEnforcesRequired(t *testing.T) {
+	data := make(map[string]interface{})
+	rules := ValidationRules{"Foo": []string{"Int", "required"}}
+
+	results := ValidateMap(data, rules)
+	if results.IsValid {
+		t.Errorf("Validator does not enforce requires!")
+	}
+}
+
+func TestAllowsOptional(t *testing.T) {
+	data := make(map[string]interface{})
+	rules := ValidationRules{"Foo": []string{"Int"}}
+
+	results := ValidateMap(data, rules)
+	if !results.IsValid {
+		t.Errorf("Validator does not allow optional!")
+	}
+}
+
 
 func TestReturnsProperResultsOnTypeFail(t *testing.T) {
 	data  := TestStruct{Foo: "Not A Number!"}

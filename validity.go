@@ -39,7 +39,9 @@ import (
 //		min				    The field under validation must be equal to or longer than "a" (if a string), or
 // 								equal to or greater than "a" (if numeric). Accepts string and numeric types.
 //		regex:pattern		The field under validation must match the given pattern. Accepts string types.
-//		required			The field under validation must be present. Accepts any type.
+//		required			The field under validation must be present. Accepts any type. Note optionality does not
+//								function when trying to validate structs, as it isn't possible to know if their zero
+//								values are zero because they aren't set, or because they should actually be zero.
 //		required_if,key,v	The field under validation is required only if another field
 // 								equals the given value. Accepts any type.
 //		required_w,key...	The field under validation must be present if any of the other fields are present. Accepts
