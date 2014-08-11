@@ -1,0 +1,88 @@
+# Beautiful Validity
+
+Package to parse and validate unsafe input. Includes a nice range of build-in validators, and is extensible for custom validation rules. This was inspired by Laravel's validators, and was written partially as an experiment while learning Go.
+
+### Example
+
+```go
+import "validity"
+
+// ...
+
+// Data may be a map[string]interface{}, such as could be returned by JSON decoding.
+// Alternately you can validate a struct using the function ValidateStruct
+rules := ValidationRules{
+    "username": []string{"String", "required", "between:4,30"},
+    "email":    []string{"String", "email"}
+}
+
+results := ValidateMap(data, rules)
+
+if !results.IsValid {
+    fmt.Printf("Error validating data! The following have failed:")
+    
+    // The following could print output like:
+    //
+    //  The validator between for username has failed!
+    //  The valiator email for email has failed!
+    
+    for key, failures := range results.Errors {
+        for _, method := range failures {
+            fmt.Printf("The validator '%s' for '%s' has failed!", method, key);
+        }
+    }
+} else {
+    fmt.Print("Data is valid!")
+}
+```
+
+### Usage
+
+ValidationRules, passed into ValidateMap or ValidateStruct, is a map of strings to slices of "things". The keys of the map should be the field names to validate, in the struct or map of input given. The values should be slices of validators to run. For example:
+
+```go
+rules := ValidationRules{"username": []string{"String", "required", "between: 4, 30"}}
+```
+
+... would ensure the "username" is present and between four and 30 characters long. The first element of the map MUST be a value of the type to convert to. Any numeric or string type is valid. If the value cannot be converted to the given type, then it fails validation. The available types are: Int, String, Float.
+
+Possible rules include:
+ * `accepted`: The field under validation must be "yes", "on", true, or 1. Permits numeric and string types.
+ * `alpha`: The field under validation must be entirely alphabetic characters. Permits string types.
+ * `alpha_dash`: The field under validation may have alpha-numeric characters, as well as dashes and underscores. Permits string types.
+ * `alpha_num`: The field under validation must be entirely alpha-numeric characters. Permits string types.
+ * `between:,a,b`: The field under validation must be between "a" and "b" characters long, or between the values a and b (if numeric). Permits string and numeric types.
+ * `date`: The field under validation must parse to a date. Accepts string types.
+ * `digits:num`: The field under validation must have exactly `num` of digits. Accepts numeric types.
+ * `digits_between:a,b`: The field under validation must have between a and b digits. Accepts numeric types.
+ * `email`: The field under validation must be an email.
+ * `ip`: The field under validation must be an IP, either ipv4 or ipv6. Accepts string types.
+ * `ipv4`: The field under validation must be in IPv4 format. Accepts string types.
+ * `ipv6`: The field under validation must be in IPv6 format. Accepts string types.
+ * `len:num`: The field under validation must be be `num` characters long. Accepts string types.
+ * `max`: The field under validation must be equal to or shorter than "a" (if a string), or equal to or smaller than "a" (if numeric). Accepts string and numeric types.
+ * `min`: The field under validation must be equal to or longer than "a" (if a string), or equal to or greater than "a" (if numeric). Accepts string and numeric types.
+ * `regex:pattern`: The field under validation must match the given pattern. Accepts string types.
+ * `required`: The field under validation must be present. Accepts any type.
+ * `url`: The field under validation must be a URL. Accepts string types.
+ 
+The return from the validation functions is a struct ValidationResults:
+
+```go
+type ValidationResults struct {
+	// Indicates whether the data under validation has passed the set of rules.
+	IsValid bool
+	// This is a map of strings to slices of strings. Its keys will be any validation fields which had an error, and
+	// the values will be the rules which failed.
+	Errors  map[string][]string
+	// The results is a map of everything after validation. This will be the same data, excluding extraneous values, and
+	// values which did not passed validation. They will also be converted to the correct types. Integers will be of
+	// type int64, Floats of float64, and Strings of string.
+	//
+	// The reason that values which did not pass validation are not returned, is because it is not possible to know
+	// their types without reflecting them - validation can fail if a value is not able to be converted to a type.
+	// This can lead to pitfalls - assuming a value is a of type - not to mention extra work on behalf of the
+	// programmer.
+	Data map[string]interface{}
+}
+```
