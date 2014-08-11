@@ -86,3 +86,29 @@ type ValidationResults struct {
 	Data map[string]interface{}
 }
 ```
+
+### Custom Validators
+
+There are currently three "types" of validators: `IntValidityChecker`, `FloatValidityChecker`, and `StringValidityChecker`. These contain methods like `ValidateRule() bool`, and can therefore be extended easily. Let's make a silly validator:
+ 
+```go
+import "validity"
+
+// ...
+
+func (v validity.StringValidityChecker) ValidateSomethingSilly(suffix string) bool {
+    return v.Item == 'silly' + suffix
+}
+```
+
+You can now use the validator like so:
+
+```go
+rules := ValidationRules{"someString": []string{"String", "required", "something_silly:String"}}
+```
+
+The validator will now pass only if "someString" is given and is equal to `sillyString`. You will notice that:
+
+ * "arguments" of the validators get passed in as strings to the function.
+ * You do not need a type assertion on `v.Item`
+ * Rules which are in snake\_case are converted to StudlyCase automatically.
