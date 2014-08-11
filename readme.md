@@ -52,12 +52,12 @@ You may also declare your rules as structure tags, in a field `validators`. Each
 
 ```go
 type TestStructTags struct {
-	Foo string 	`validators:"between:4,5 and email"`
+	Foo string 	`validators:"between:2,10 and email"`
 	Bar int		`validators:"digits:3"`
 	Baz float32
 }
 
-results := ValidateStructTags(TestSTructTags{})
+results := ValidateStructTags(TestStructTags{})
 ```
 
 #### Built-In Rules
