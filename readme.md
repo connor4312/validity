@@ -1,5 +1,7 @@
 # Beautiful Validity
 
+[![Build Status](https://travis-ci.org/Assembli/beautiful-validity.svg)](https://travis-ci.org/Assembli/beautiful-validity)
+
 Package to parse and validate unsafe input. Includes a nice range of build-in validators, and is extensible for custom validation rules. This was inspired by Laravel's validators, and was written partially as an experiment while learning Go.
 
 ### Example
