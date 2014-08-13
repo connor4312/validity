@@ -1,9 +1,10 @@
 package validity
 
 import (
-	"github.com/fatih/structure"
-	"strings"
 	"reflect"
+	"strings"
+
+	"github.com/fatih/structs"
 )
 
 // ValidationRules is a map of strings to slices of things. The keys of the map should be the field names to validate,
@@ -60,7 +61,7 @@ type ValidationResults struct {
 	IsValid bool
 	// This is a map of strings to slices of strings. Its keys will be any validation fields which had an error, and
 	// the values will be the rules which failed.
-	Errors  map[string][]string
+	Errors map[string][]string
 	// The results is a map of everything after validation. This will be the same data, excluding extraneous values, and
 	// values which did not passed validation. They will also be converted to the correct types. Integers will be of
 	// type int64, Floats of float64, and Strings of string.
@@ -86,19 +87,19 @@ func inferValidationType(t interface{}) string {
 // This function converts the struct into a map, then runs ValidateMap() on it. See ValidateMap's documentation for
 // usage details.
 func ValidateStruct(s interface{}, rules ValidationRules) *ValidationResults {
-	return ValidateMap(structure.Map(s), rules)
+	return ValidateMap(structs.Map(s), rules)
 }
 
 func ValidateStructTags(s interface{}) *ValidationResults {
-	input := structure.New(s)
+	input := structs.New(s)
 	rules := ValidationRules{}
-	data  := map[string]interface{}{}
+	data := map[string]interface{}{}
 
 	fields := input.Fields()
 
 	for _, field := range fields {
 		name := field.Name()
-		val  := field.Value()
+		val := field.Value()
 
 		tag := field.Tag("validators")
 		rules[name] = []string{inferValidationType(val)}
