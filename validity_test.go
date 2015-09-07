@@ -47,7 +47,7 @@ func TestValidatesStructTags(t *testing.T) {
 
 	results := ValidateStructTags(data)
 	if results.IsValid ||
-		results.Errors["Foo"][0] != "Between" ||
+		results.Errors["Foo"][0] != "between:4,5" ||
 		len(results.Errors["Foo"]) != 2 ||
 		len(results.Errors["Bar"]) != 0 {
 		t.Errorf("Does not validate a basic struct of data! Results: %s", results)
@@ -118,7 +118,7 @@ func TestReturnsProperResultsOnFailedValidators(t *testing.T) {
 
 	results := ValidateStruct(data, rules)
 
-	if results.Errors["Foo"][0] != "Min" || results.Errors["Foo"][1] != "Digits" {
+	if results.Errors["Foo"][0] != "Min:50" || results.Errors["Foo"][1] != "Digits:3" {
 		t.Errorf("Validator did not return the failing rules. Wanted a []string{\"Min\", \"Digits\"} Returned instead: %s", results.Errors["Foo"])
 	}
 	if _, exists := results.Data["Foo"]; exists {

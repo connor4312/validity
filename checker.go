@@ -45,7 +45,7 @@ func GetCheckerErrors(rules []string, instance ValidityChecker) []string {
 
 		// and if it is not valid, then we need to store it in the errors...
 		if !valid {
-			errors = append(errors, method)
+			errors = append(errors, rule)
 		}
 	}
 
