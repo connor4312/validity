@@ -45,10 +45,57 @@ func GetCheckerErrors(rules []string, instance ValidityChecker) []string {
 
 		// and if it is not valid, then we need to store it in the errors...
 		if !valid {
-			errors = append(errors, rule)
+			msg := GetHumanMessage(rule)
+			errors = append(errors, msg)
 		}
 	}
 
 	// And finally return any errors which occured.
 	return errors
+}
+
+func GetHumanMessage(rule string) string {
+
+		parts  := strings.SplitN(rule, ":", 2)
+		method 	 := strings.ToLower(parts[0])
+
+		// In case a new validation rule is added
+		message := "Validation for rule [" + rule + "] failed!"
+
+		switch method {
+		case "accepted":
+				message = "It must be 'yes', 'on', true, or 1. Permits numeric and text"
+		case "url", "email", "ipv4", "ipv6", "date", "ip":
+				message = "It must be a valid " + strings.ToUpper(method) + " type"
+		case "regex":
+				message = "It must match this patern: " + parts[1]
+		case "between":
+				betweenMessage := getBetweenMessage(parts[1])
+				message = "The length should be between " + betweenMessage + " characters (the interval is exclusive)"
+		case "digits_between":
+				betweenMessage := getBetweenMessage(parts[1])
+				message = "The field must be a numeric type and has between " + betweenMessage + " digits"
+		case "min":
+				message = "The minimum length allowed is " + parts[1]
+		case "max":
+				message = "The maximum length allowed is " + parts[1]
+		case "len":
+				message = "It must have exactly " + parts[1] + " digits"
+		case "alpha":
+				message = "It must be entirely alphabetic characters"
+		case "alpha_dash":
+				message = "It may have alpha-numeric characters, as well as dashes and underscores"
+		case "alpha_num":
+					message = "It must be entirely alpha-numeric characters"
+		case "digits":
+					message = "It must be a number and it must have exactly " + parts[1] + " of digits"
+		case "required":
+					message = "The field must be completed"
+		}
+		return message;
+}
+
+func getBetweenMessage (old string) string {
+		newString  := strings.Replace(old, ",", " and ", -1)
+		return newString
 }
