@@ -71,7 +71,10 @@ func GetHumanMessage(rule string) string {
 				message = "It must match this patern: " + parts[1]
 		case "between":
 				betweenMessage := getBetweenMessage(parts[1])
-				message = "The length should be between " + betweenMessage + " characters (the interval is exclusive)"
+				message = "The length should be between " + betweenMessage + " characters (the boundaries are not allowed)"
+		case "between_inclusive":
+				betweenMessage := getBetweenMessage(parts[1])
+				message = "The length should be between " + betweenMessage + " characters (the boundaries are allowed)"
 		case "digits_between":
 				betweenMessage := getBetweenMessage(parts[1])
 				message = "The field must be a numeric type and has between " + betweenMessage + " digits"

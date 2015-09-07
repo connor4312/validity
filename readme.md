@@ -22,12 +22,12 @@ results := ValidateMap(data, rules)
 
 if !results.IsValid {
     fmt.Printf("Error validating data! The following have failed:")
-    
+
     // The following could print output like:
     //
     //  The validator between for username has failed!
     //  The valiator email for email has failed!
-    
+
     for key, failures := range results.Errors {
         for _, method := range failures {
             fmt.Printf("The validator '%s' for '%s' has failed!", method, key);
@@ -72,6 +72,7 @@ Possible rules include:
  * `alpha_dash`: The field under validation may have alpha-numeric characters, as well as dashes and underscores. Permits string types.
  * `alpha_num`: The field under validation must be entirely alpha-numeric characters. Permits string types.
  * `between:,a,b`: The field under validation must be between "a" and "b" characters long, or between the values a and b (if numeric). Permits string and numeric types.
+ * `between_inclusive:,a,b`	The field under validation must be between "a" and "b" *(including the boundaries)* characters long, or between the values a and b inclusive a and b (if numeric). Permits string and numeric types. (is is the same as min, max combined)
  * `date`: The field under validation must parse to a date. Accepts string types.
  * `digits:num`: The field under validation must have exactly `num` of digits. Accepts numeric types.
  * `digits_between:a,b`: The field under validation must have between a and b digits. Accepts numeric types.
@@ -85,7 +86,7 @@ Possible rules include:
  * `regex:pattern`: The field under validation must match the given pattern. Accepts string types.
  * `required`: The field under validation must be present. Accepts any type. Note optionality does not function when trying to validate structs, as it isn't possible to know if their zero values are zero because they aren't set, or because they should actually be zero.
  * `url`: The field under validation must be a URL. Accepts string types.
- 
+
 The return from the validation functions is a struct ValidationResults:
 
 ```go
@@ -110,7 +111,7 @@ type ValidationResults struct {
 ### Custom Validators
 
 There are currently three "types" of validators: `IntValidityChecker`, `FloatValidityChecker`, and `StringValidityChecker`. These contain methods like `ValidateRule() bool`, and can therefore be extended easily. Let's make a silly validator:
- 
+
 ```go
 import "validity"
 

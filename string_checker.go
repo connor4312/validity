@@ -72,6 +72,12 @@ func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
 	return length > v.toInt(min) && length < v.toInt(max)
 }
 
+func (v StringValidityChecker) ValidateBetweenInclusive(min string, max string) bool {
+	length := len(v.Item)
+
+	return length >= v.toInt(min) && length <= v.toInt(max)
+}
+
 func (v StringValidityChecker) ValidateDate() bool {
 	_, err := time.Parse("Jan 2, 2006 at 3:04pm (MST)", v.Item)
 

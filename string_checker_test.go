@@ -116,6 +116,51 @@ func TestStringValidateBetweenFailUpper(t *testing.T) {
 	}
 }
 
+func TestStringValidateBetweenInclusivePass(t *testing.T) {
+	data := TestStruct{Foo: "fooo"}
+	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+
+	results := ValidateStruct(data, rules)
+	if !results.IsValid {
+		t.Errorf("String between validator does not pass.")
+	}
+}
+func TestStringValidateBetweenInclusiveFailLower(t *testing.T) {
+	data := TestStruct{Foo: "fo"}
+	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+
+	results := ValidateStruct(data, rules)
+	if results.IsValid {
+		t.Errorf("String between validator does not fail on lower.")
+	}
+}
+func TestStringValidateBetweenInclusiveFailUpper(t *testing.T) {
+	data := TestStruct{Foo: "fooooooooooooooo"}
+	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+
+	results := ValidateStruct(data, rules)
+	if results.IsValid {
+		t.Errorf("String between validator does not fail on upper.")
+	}
+}
+func TestStringValidateBetweenInclusivePassLowerB(t *testing.T) {
+	data := TestStruct{Foo: "foo"}
+	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+
+	results := ValidateStruct(data, rules)
+	if !results.IsValid {
+		t.Errorf("String between validator does not pass.")
+	}
+}
+func TestStringValidateBetweenInclusivePassUpperB(t *testing.T) {
+	data := TestStruct{Foo: "f23456"}
+	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+
+	results := ValidateStruct(data, rules)
+	if !results.IsValid {
+		t.Errorf("String between validator does not pass.")
+	}
+}
 
 
 func TestStringValidateDatePass(t *testing.T) {
