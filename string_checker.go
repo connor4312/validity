@@ -59,7 +59,7 @@ func (v StringValidityChecker) ValidateAlpha() bool {
 }
 
 func (v StringValidityChecker) ValidateAlphaDash() bool {
-	return v.checkRegexp("^[A-Za-z\\-_]*$")
+	return v.checkRegexp("^[A-Za-z0-9\\-_]*$")
 }
 
 func (v StringValidityChecker) ValidateAlphaNum() bool {

@@ -64,7 +64,15 @@ func TestStringValidateAlphaDashFail(t *testing.T) {
 		t.Errorf("String alpha_dash validator does not fail.")
 	}
 }
+func TestStringWithNumValidateAlphaDashPass(t *testing.T) {
+	data := TestStruct{Foo: "This_Is-Alpha_Dash-With-12"}
+	rules := ValidationRules{"Foo": []string{"String", "alpha_dash"}}
 
+	results := ValidateStruct(data, rules)
+	if !results.IsValid {
+		t.Errorf("String alpha_dash validator does not pass.")
+	}
+}
 
 
 func TestStringValidateAlphaNumPass(t *testing.T) {
