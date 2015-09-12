@@ -108,6 +108,11 @@ func (v StringValidityChecker) ValidateLen(length string) bool {
 	return len(v.Item) != v.toInt(length)
 }
 
+func (v StringValidityChecker) ValidateFullName() bool {
+		return v.checkRegexp(`^[A-Za-z0-9\s\.]*$`)
+}
+
+
 func (v StringValidityChecker) ValidateMax(length string) bool {
 	return len(v.Item) <= v.toInt(length)
 }

@@ -254,6 +254,27 @@ func TestStringValidateIpv6Fail(t *testing.T) {
 }
 
 
+func TestStringValidateNamePass(t *testing.T) {
+	data := TestStruct{Foo: "Dr. Ion Bastinaru 2"}
+	rules := ValidationRules{"Foo": []string{"String", "full_name"}}
+
+	results := ValidateStruct(data, rules)
+	if !results.IsValid {
+		t.Errorf("String full-name validator does not accept a good name.")
+	}
+}
+func TestStringValidateNameFail(t *testing.T) {
+	data := TestStruct{Foo: "Dr. Ion-Bastinaru 2"}
+	rules := ValidationRules{"Foo": []string{"String", "full_name"}}
+
+	results := ValidateStruct(data, rules)
+	if results.IsValid {
+		t.Errorf("String full-name validator does not reject a bad name.")
+	}
+}
+
+
+
 
 func TestStringValidateMaxPass(t *testing.T) {
 	data := TestStruct{Foo: "foo"}
