@@ -93,7 +93,9 @@ func GetHumanMessage(rule string) string {
 		case "digits":
 					message = "It must be a number and it must have exactly " + parts[1] + " of digits"
 		case "required":
-					message = "The field must be completed"
+					message = "The field under validation must be present. Accepts any type. Note optionality does not function when trying to validate structs, as it isn't possible to know if their zero values are zero because they aren't set, or because they should actually be zero"
+		case "full_name":
+					message = "The field must contain alpha-numeric characters or dots or spaces"
 		}
 		return message;
 }

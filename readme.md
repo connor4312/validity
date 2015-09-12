@@ -81,6 +81,7 @@ Possible rules include:
  * `ipv4`: The field under validation must be in IPv4 format. Accepts string types.
  * `ipv6`: The field under validation must be in IPv6 format. Accepts string types.
  * `len:num`: The field under validation must be be `num` characters long. Accepts string types.
+ * `full_name`: The field must contain alpha-numeric characters or dots or spaces
  * `max`: The field under validation must be equal to or shorter than "a" (if a string), or equal to or smaller than "a" (if numeric). Accepts string and numeric types.
  * `min`: The field under validation must be equal to or longer than "a" (if a string), or equal to or greater than "a" (if numeric). Accepts string and numeric types.
  * `regex:pattern`: The field under validation must match the given pattern. Accepts string types.
