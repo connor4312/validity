@@ -119,7 +119,7 @@ You can use the translator in 2 ways:
 * translate the entire map of errors, by returning a map of messages similar to errors (this allows validity to be used by the older versions)
   In order to translate you call this: `result.TranslateTo(language)`
 
-  In case the language is not supported, the go will panic.
+  In case the language is not supported, go will panic.
 
   The `TranslateTo` method of ValidityResults is a factory method which creates the translator. It takes care of the translation process.
 
