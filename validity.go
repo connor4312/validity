@@ -57,6 +57,12 @@ import (
 //
 type ValidationRules map[string][]string
 
+//
+// // Returns a map of the invalid value keys, to sentences.
+// func (v *ValidationResults) Translate(t Translator) map[string]string {
+// 	t.Translate(v)
+// }
+
 // This struct is returned from validation functions.
 type ValidationResults struct {
 	// Indicates whether the data under validation has passed the set of rules.
@@ -73,6 +79,30 @@ type ValidationResults struct {
 	// This can lead to pitfalls - assuming a value is a of type - not to mention extra work on behalf of the
 	// programmer.
 	Data map[string]interface{}
+}
+
+// TranslateTo translates the errors into a language and returns a map[string]string
+func (v *ValidationResults) TranslateTo(language string) map[string][]string {
+	var translator Translater
+	switch language {
+	case "english":
+		translator = NewEnglishTranslator()
+		break
+	case "romanian":
+		translator = NewRomanianTranslator()
+		break
+	default:
+		panic("This language " + language + " is not supported.")
+	}
+	return translator.Translate(v)
+}
+
+// ExtractMethod returns the method for complex
+// For instance: if you have between_inclusive:8,9 ---> it returns between_inclusive
+// It can be used for older versions which have returned between_inclusive rather than between_inclusive:8,9
+func ExtractMethod(element string) string {
+	parts := strings.SplitN(element, ":", 2)
+	return parts[0]
 }
 
 func inferValidationType(t interface{}) string {

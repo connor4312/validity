@@ -109,6 +109,32 @@ type ValidationResults struct {
 }
 ```
 
+#### Translators
+
+
+A translator converts the errors from a validity result to human messages for a certain language.
+
+You can use the translator in 2 ways:
+
+* translate the entire map of errors, by returning a map of messages similar to errors (this allows validity to be used by the older versions)
+  In order to translate you call this: `result.TranslateTo(language)`
+
+  In case the language is not supported, the go will panic.
+
+  The `TranslateTo` method of ValidityResults is a factory method which creates the translator. It takes care of the translation process.
+
+* translate one particular rule by: creating a translator and calling `TranslateRule(method, advance)`. For instance, `TranslateRule('between_inclusive', '7,90')`
+
+There are 2 languages supported:
+
+* English
+* Romanian
+Note:
+* For previous versions, you can use the function (ExtractMethod) to trim the full method which is now returned.
+
+
+
+
 ### Custom Validators
 
 There are currently three "types" of validators: `IntValidityChecker`, `FloatValidityChecker`, and `StringValidityChecker`. These contain methods like `ValidateRule() bool`, and can therefore be extended easily. Let's make a silly validator:
