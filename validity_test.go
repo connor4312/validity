@@ -10,15 +10,14 @@ type TestStruct struct {
 	Baz float32
 }
 
-
 type TestStructTags struct {
-	Foo string 	`validators:"between:4,5 and email"`
-	Bar int		`validators:"digits:3"`
+	Foo string `validators:"between:4,5 and email"`
+	Bar int    `validators:"digits:3"`
 	Baz float32
 }
 
 func TestValidatesMap(t *testing.T) {
-	var v interface {}
+	var v interface{}
 	v = "42"
 
 	data := make(map[string]interface{})
@@ -44,11 +43,10 @@ func TestValidatesStruct(t *testing.T) {
 
 func TestValidatesStructTags(t *testing.T) {
 	data := TestStructTags{Foo: "NotAnEmail", Bar: 123}
-	expectedMessage := GetHumanMessage("between:4,5")
 
 	results := ValidateStructTags(data)
 	if results.IsValid ||
-		results.Errors["Foo"][0] != expectedMessage ||
+		results.Errors["Foo"][0] != "Between" ||
 		len(results.Errors["Foo"]) != 2 ||
 		len(results.Errors["Bar"]) != 0 {
 		t.Errorf("Does not validate a basic struct of data! Results: %s", results)
@@ -56,7 +54,7 @@ func TestValidatesStructTags(t *testing.T) {
 }
 
 func TestHandlesBasicTypeConversions(t *testing.T) {
-	data  := TestStruct{Foo: "42", Bar: 55, Baz: 12.34}
+	data := TestStruct{Foo: "42", Bar: 55, Baz: 12.34}
 	rules := ValidationRules{"Foo": []string{"Int"}, "Bar": []string{"String"}, "Baz": []string{"Float"}}
 
 	results := ValidateStruct(data, rules)
@@ -66,7 +64,7 @@ func TestHandlesBasicTypeConversions(t *testing.T) {
 }
 
 func TestHandlesInvalidTypeConversions(t *testing.T) {
-	data  := TestStruct{Foo: "Not A Number!", Bar: 1234, Baz: 12.34}
+	data := TestStruct{Foo: "Not A Number!", Bar: 1234, Baz: 12.34}
 	rules := ValidationRules{"Foo": []string{"Int"}, "Bar": []string{"String"}, "Baz": []string{"Float"}}
 
 	results := ValidateStruct(data, rules)
@@ -95,9 +93,8 @@ func TestAllowsOptional(t *testing.T) {
 	}
 }
 
-
 func TestReturnsProperResultsOnTypeFail(t *testing.T) {
-	data  := TestStruct{Foo: "Not A Number!"}
+	data := TestStruct{Foo: "Not A Number!"}
 	rules := ValidationRules{"Foo": []string{"Int"}}
 
 	results := ValidateStruct(data, rules)
@@ -112,17 +109,13 @@ func TestReturnsProperResultsOnTypeFail(t *testing.T) {
 	}
 }
 
-
 func TestReturnsProperResultsOnFailedValidators(t *testing.T) {
-	data  := TestStruct{Foo: "42"}
+	data := TestStruct{Foo: "42"}
 	rules := ValidationRules{"Foo": []string{"Int", "Min:50", "Digits:3", "Max: 60"}}
-
-	MinExpectedMessage := GetHumanMessage("Min:50")
-	DigitsExpectedMessage := GetHumanMessage("Digits:3")
 
 	results := ValidateStruct(data, rules)
 
-	if results.Errors["Foo"][0] != MinExpectedMessage || results.Errors["Foo"][1] != DigitsExpectedMessage {
+	if results.Errors["Foo"][0] != "Min" || results.Errors["Foo"][1] != "Digits" {
 		t.Errorf("Validator did not return the failing rules. Wanted a []string{\"Min\", \"Digits\"} Returned instead: %s", results.Errors["Foo"])
 	}
 	if _, exists := results.Data["Foo"]; exists {
@@ -130,9 +123,8 @@ func TestReturnsProperResultsOnFailedValidators(t *testing.T) {
 	}
 }
 
-
 func TestReturnsProperResultsOnSuccess(t *testing.T) {
-	data  := TestStruct{Foo: "42"}
+	data := TestStruct{Foo: "42"}
 	rules := ValidationRules{"Foo": []string{"Int", "Min:40", "Digits:2", "Max: 60"}}
 
 	results := ValidateStruct(data, rules)
