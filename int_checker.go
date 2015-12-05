@@ -1,8 +1,8 @@
 package validity
 
 import (
-	"strconv"
 	"math"
+	"strconv"
 )
 
 type IntValidityChecker struct {
@@ -61,6 +61,12 @@ func (v IntValidityChecker) ValidateDigitsBetween(min string, max string) bool {
 	digits := v.getDigits()
 
 	return digits > v.toInt(min) && digits < v.toInt(max)
+}
+
+func (v IntValidityChecker) ValidateDigitsBetweenInclusive(min string, max string) bool {
+	digits := v.getDigits()
+
+	return digits >= v.toInt(min) && digits <= v.toInt(max)
 }
 
 func (v IntValidityChecker) ValidateMax(max string) bool {

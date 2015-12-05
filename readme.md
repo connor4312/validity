@@ -75,7 +75,8 @@ Possible rules include:
  * `between_inclusive:,a,b`	The field under validation must be between "a" and "b" *(including the boundaries)* characters long, or between the values a and b inclusive a and b (if numeric). Permits string and numeric types. (is is the same as min, max combined)
  * `date`: The field under validation must parse to a date. Accepts string types.
  * `digits:num`: The field under validation must have exactly `num` of digits. Accepts numeric types.
- * `digits_between:a,b`: The field under validation must have between a and b digits. Accepts numeric types.
+ * `digits_between:a,b`: The field under validation must have between (a, b) digits. Accepts numeric types.
+ * `digits_between_inclusive:a,b`: The field under validation must have between [a, b] digits. Accepts numeric types.
  * `email`: The field under validation must be an email.
  * `ip`: The field under validation must be an IP, either ipv4 or ipv6. Accepts string types.
  * `ipv4`: The field under validation must be in IPv4 format. Accepts string types.
