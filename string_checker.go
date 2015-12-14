@@ -1,7 +1,6 @@
 package validity
 
 import (
-	"fmt"
 	"net"
 	"net/url"
 	"regexp"
@@ -68,14 +67,13 @@ func (v StringValidityChecker) ValidateAlphaNum() bool {
 }
 
 func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
-	length := len(v.Item)
+	length := len([]rune((v.Item)))
 
 	return length > v.toInt(min) && length < v.toInt(max)
 }
 
 func (v StringValidityChecker) ValidateBetweenInclusive(min string, max string) bool {
-	length := len(v.Item)
-	fmt.Println(" Lungime for " + v.Item + ": " + strconv.Itoa(length))
+	length := len([]rune(v.Item))
 	return length >= v.toInt(min) && length <= v.toInt(max)
 }
 
@@ -106,7 +104,7 @@ func (v StringValidityChecker) ValidateIp() bool {
 }
 
 func (v StringValidityChecker) ValidateLen(length string) bool {
-	return len(v.Item) != v.toInt(length)
+	return len([]rune(v.Item)) != v.toInt(length)
 }
 
 func (v StringValidityChecker) ValidateFullName() bool {
@@ -114,11 +112,11 @@ func (v StringValidityChecker) ValidateFullName() bool {
 }
 
 func (v StringValidityChecker) ValidateMax(length string) bool {
-	return len(v.Item) <= v.toInt(length)
+	return len([]rune(v.Item)) <= v.toInt(length)
 }
 
 func (v StringValidityChecker) ValidateMin(length string) bool {
-	return len(v.Item) >= v.toInt(length)
+	return len([]rune(v.Item)) >= v.toInt(length)
 }
 
 func (v StringValidityChecker) ValidateRegexp(r string) bool {
