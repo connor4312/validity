@@ -1,10 +1,11 @@
 package validity
 
 import (
-	"strconv"
-	"regexp"
+	"fmt"
 	"net"
 	"net/url"
+	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -74,7 +75,7 @@ func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
 
 func (v StringValidityChecker) ValidateBetweenInclusive(min string, max string) bool {
 	length := len(v.Item)
-
+	fmt.Println(" Lungime for " + v.Item + ": " + strconv.Itoa(length))
 	return length >= v.toInt(min) && length <= v.toInt(max)
 }
 
@@ -109,9 +110,8 @@ func (v StringValidityChecker) ValidateLen(length string) bool {
 }
 
 func (v StringValidityChecker) ValidateFullName() bool {
-		return v.checkRegexp(`^[A-Za-z0-9\s\.]*$`)
+	return v.checkRegexp(`^[A-Za-z0-9\s\.]*$`)
 }
-
 
 func (v StringValidityChecker) ValidateMax(length string) bool {
 	return len(v.Item) <= v.toInt(length)
