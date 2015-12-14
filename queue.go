@@ -13,9 +13,9 @@ type ValidityQueue struct {
 	// the key of the data point, and the rules intended to be run against the data point.
 	Checkers []ValidityChecker
 	// Data is a map of the raw input data for the queue to parse. This is set by ValidateMap, usually.
-	Data     map[string]interface{}
-	Rules    ValidationRules
-	Results  *ValidationResults
+	Data    map[string]interface{}
+	Rules   ValidationRules
+	Results *ValidationResults
 }
 
 // ValidityParsers is a map of functions to parse the given types with. Each one is responsible for converting the value
@@ -34,9 +34,9 @@ type ValidityParsers struct{}
 // empty if everything is good and happy. We take that output and affix it onto the results appropriately. It is also in
 // this stage that, if everything passed, the converted, safe value is put in the ValidationResult.Data map.
 func (c ValidityQueue) Run() {
-	c.Results.IsValid  = true
-	c.Results.Errors   = map[string][]string{}
-	c.Results.Data     = map[string]interface{}{}
+	c.Results.IsValid = true
+	c.Results.Errors = map[string][]string{}
+	c.Results.Data = map[string]interface{}{}
 
 	c.RunParsers()
 	c.RunCheckers()
@@ -55,7 +55,7 @@ func (c *ValidityQueue) RunParsers() {
 		}
 
 		// This calls a function like "ParseInt" present on the ValidityParsers map.
-		callIn(ValidityParsers{}, "Parse" + validator[0], c, key, item, validator)
+		callIn(ValidityParsers{}, "Parse"+validator[0], c, key, item, validator)
 	}
 }
 

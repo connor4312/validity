@@ -1,8 +1,8 @@
 package validity
 
 import (
-	"strconv"
 	"math"
+	"strconv"
 )
 
 type FloatValidityChecker struct {
@@ -56,6 +56,10 @@ func (v FloatValidityChecker) ValidateAccepted() bool {
 
 func (v FloatValidityChecker) ValidateBetween(min string, max string) bool {
 	return v.Item > v.toFloat(min) && v.Item < v.toFloat(max)
+}
+
+func (v FloatValidityChecker) ValidateBetweenInclusive(min string, max string) bool {
+	return v.Item >= v.toFloat(min) && v.Item <= v.toFloat(max)
 }
 
 func (v FloatValidityChecker) ValidateDigits(num string) bool {
