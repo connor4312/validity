@@ -28,6 +28,8 @@ func (translator RomanianTranslator) TranslateRule(method string, options string
 		message = "Câmpul trebuie sa fie un " + strings.ToUpper(method) + " valid."
 	case "regex":
 		message = "Trebuie să se potrivească acestei expresii regulate: " + options
+	case "cnp":
+		message = "Trebuie să fie un cod numeric personal (CNP) valid"
 	case "between":
 		betweenMessage := translator.getMessageBetween(options)
 		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (fară intervale)"

@@ -50,6 +50,39 @@ func (v StringValidityChecker) parseIP() net.IP {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
+func (v StringValidityChecker) ValidateCNP(rawCNP string) bool {
+
+	pattern := "^\\d{1}\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d| 5[0-2]|99)\\d{4}$"
+
+	expression, errCompile := regexp.Compile(pattern)
+
+	if errCompile == nil && expression.MatchString(rawCNP) {
+
+		var (
+			bigSum    int
+			ctrlDigit int
+			control   = []int{2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9}
+		)
+
+		for i := 0; i < 12; i++ {
+			current, errCurrent := strconv.Atoi(string(rawCNP[i]))
+			if errCurrent != nil {
+				return false
+			}
+			bigSum += current * control[i]
+		}
+		ctrlDigit = bigSum % 11
+
+		if ctrlDigit == 10 {
+			ctrlDigit = 1
+		}
+
+		return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
+	}
+	return false
+
+}
+
 func (v StringValidityChecker) ValidateAccepted() bool {
 	return v.Item == "yes" || v.Item == "on" || v.Item == "1"
 }
