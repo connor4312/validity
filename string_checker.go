@@ -50,7 +50,9 @@ func (v StringValidityChecker) parseIP() net.IP {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
-func (v StringValidityChecker) ValidateCNP(rawCNP string) bool {
+func (v StringValidityChecker) ValidateCNP() bool {
+
+	rawCNP := v.Item
 
 	pattern := "^\\d{1}\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d| 5[0-2]|99)\\d{4}$"
 
