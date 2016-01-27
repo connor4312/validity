@@ -58,7 +58,7 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	var (
 		bigSum    int
 		ctrlDigit int
-		digits    = []int{}
+		digits    = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		year      = 0
 		control   = []int{2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9}
 	)
