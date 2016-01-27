@@ -1,6 +1,7 @@
 package validity
 
 import (
+	"log"
 	"net"
 	"net/url"
 	"regexp"
@@ -54,34 +55,102 @@ func (v StringValidityChecker) ValidateCnp() bool {
 
 	rawCNP := v.Item
 
-	pattern := "^\\d{1}\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d| 5[0-2]|99)\\d{4}$"
+	var (
+		bigSum    int
+		ctrlDigit int
+		digits    = []int{}
+		year      = 0
+		control   = []int{2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9}
+	)
 
-	expression, errCompile := regexp.Compile(pattern)
+	// iterate
 
-	if errCompile == nil && expression.MatchString(rawCNP) {
-
-		var (
-			bigSum    int
-			ctrlDigit int
-			control   = []int{2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9}
-		)
-
-		for i := 0; i < 12; i++ {
-			current, errCurrent := strconv.Atoi(string(rawCNP[i]))
-			if errCurrent != nil {
-				return false
-			}
-			bigSum += current * control[i]
+	for i := 0; i < 12; i++ {
+		current, errCurrent := strconv.Atoi(string(rawCNP[i]))
+		if errCurrent != nil {
+			log.Println("The character at position " + strconv.Itoa(i) + "[" + string(rawCNP[i]) + "] is not a digit")
+			return false
 		}
-		ctrlDigit = bigSum % 11
-
-		if ctrlDigit == 10 {
-			ctrlDigit = 1
-		}
-
-		return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
+		bigSum += control[i] * current
+		digits[i] = current
 	}
-	return false
+
+	// Sex -  allowed only 1 -> 9
+
+	if digits[0] == 0 {
+		log.Println("Sex can not be 0")
+		return false
+	}
+
+	// year
+	year = digits[1]*10 + digits[2]
+
+	switch digits[0] {
+	case 1, 2:
+		year += 1900
+		break
+	case 3, 4:
+		year += 1800
+		break
+	case 5, 6:
+		year += 2000
+		break
+		// TODO to check
+	case 7, 8, 9:
+		year += 2000
+		now := time.Now()
+		if year > now.Year()-14 {
+			year -= 100
+		}
+		break
+	}
+
+	if year < 1800 || year > 2099 {
+		log.Println("Wrong year: " + strconv.Itoa(year))
+		return false
+	}
+
+	// Month - allowed only 1 -> 12
+	month := digits[3]*10 + digits[4]
+	if month < 1 || month > 12 {
+		log.Println("Wrong month: " + strconv.Itoa(month))
+		return false
+	}
+
+	day := digits[5]*10 + digits[6]
+
+	// check date
+	t := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
+
+	if int(t.Year()) != year || int(t.Month()) != month || t.Day() != day {
+		log.Println("The date does not exist: " + strconv.Itoa(year) + "/" + strconv.Itoa(month) + "/" + strconv.Itoa(day))
+	}
+
+	// County - allowed only 1 -> 52
+
+	county := digits[7]*10 + digits[8]
+	if county < 1 || county > 52 {
+		log.Println("Wrong county: " + strconv.Itoa(county))
+		return false
+	}
+
+	// Number - allowed only 001 --> 999
+
+	number := digits[9]*100 + digits[10]*10 + digits[11]
+	if number < 1 || number > 999 {
+		log.Println("Wrong number: " + strconv.Itoa(number))
+		return false
+	}
+
+	// Check control
+
+	ctrlDigit = bigSum % 11
+
+	if ctrlDigit == 10 {
+		ctrlDigit = 1
+	}
+
+	return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
 
 }
 
