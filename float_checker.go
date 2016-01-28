@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// FloatValidityChecker is a validator for floats
 type FloatValidityChecker struct {
 	Key   string
 	Rules []string
@@ -30,18 +31,22 @@ func (v FloatValidityChecker) getDigits() int64 {
 	return int64(math.Ceil(math.Log10(v.Item)))
 }
 
+// GetKey returns the key
 func (v FloatValidityChecker) GetKey() string {
 	return v.Key
 }
 
+// GetItem returns the item
 func (v FloatValidityChecker) GetItem() interface{} {
 	return v.Item
 }
 
+// GetRules returns the rules
 func (v FloatValidityChecker) GetRules() []string {
 	return v.Rules
 }
 
+// GetErrors returns the errors
 func (v FloatValidityChecker) GetErrors() []string {
 	return GetCheckerErrors(v.Rules[1:], &v)
 }
@@ -50,32 +55,27 @@ func (v FloatValidityChecker) GetErrors() []string {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
-func (v FloatValidityChecker) ValidateAccepted() bool {
-	return v.Item > 0
-}
-
-func (v FloatValidityChecker) ValidateBetween(min string, max string) bool {
+// ValidateBetweenStrict checks if the number: min < len(number) > max
+func (v FloatValidityChecker) ValidateBetweenStrict(min string, max string) bool {
 	return v.Item > v.toFloat(min) && v.Item < v.toFloat(max)
 }
 
-func (v FloatValidityChecker) ValidateBetweenInclusive(min string, max string) bool {
+// ValidateBetween checks if the number: min <= len(number) => max
+func (v FloatValidityChecker) ValidateBetween(min string, max string) bool {
 	return v.Item >= v.toFloat(min) && v.Item <= v.toFloat(max)
 }
 
+// ValidateDigits checks if the number of digits is that number
 func (v FloatValidityChecker) ValidateDigits(num string) bool {
 	return v.getDigits() == v.toInt(num)
 }
 
-func (v FloatValidityChecker) ValidateDigitsBetween(min string, max string) bool {
-	digits := v.getDigits()
-
-	return digits > v.toInt(min) && digits < v.toInt(max)
-}
-
+// ValidateMax checks if the number: len(number) <= max
 func (v FloatValidityChecker) ValidateMax(max string) bool {
 	return v.Item < v.toFloat(max)
 }
 
+// ValidateMin checks if the number: min <= len(number)
 func (v FloatValidityChecker) ValidateMin(min string) bool {
 	return v.Item > v.toFloat(min)
 }

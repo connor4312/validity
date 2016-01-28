@@ -63,7 +63,7 @@ type ValidationRules map[string][]string
 // 	t.Translate(v)
 // }
 
-// This struct is returned from validation functions.
+// ValidationResults is returned from validation functions.
 type ValidationResults struct {
 	// Indicates whether the data under validation has passed the set of rules.
 	IsValid bool
@@ -116,12 +116,13 @@ func inferValidationType(t interface{}) string {
 	}
 }
 
-// This function converts the struct into a map, then runs ValidateMap() on it. See ValidateMap's documentation for
+// ValidateStruct converts the struct into a map, then runs ValidateMap() on it. See ValidateMap's documentation for
 // usage details.
 func ValidateStruct(s interface{}, rules ValidationRules) *ValidationResults {
 	return ValidateMap(structs.Map(s), rules)
 }
 
+// ValidateStructTags returns the validation results
 func ValidateStructTags(s interface{}) *ValidationResults {
 	input := structs.New(s)
 	rules := ValidationRules{}
@@ -146,12 +147,12 @@ func ValidateStructTags(s interface{}) *ValidationResults {
 	return ValidateMap(data, rules)
 }
 
-// Validates a map against a set of rules. "Data" is obviously a map of string keys to mixed type values, while rules
+// ValidateMap validates a map against a set of rules. "Data" is obviously a map of string keys to mixed type values, while rules
 // is an instance of the rules to validate the data against. Returns a pointer to ValidationResults
 func ValidateMap(data map[string]interface{}, rules ValidationRules) *ValidationResults {
 	results := new(ValidationResults)
 
-	ValidityQueue{Data: data, Rules: rules, Results: results}.Run()
+	Queue{Data: data, Rules: rules, Results: results}.Run()
 
 	return results
 }

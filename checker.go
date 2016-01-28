@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-// ValidityChecker is the base interface from which type validators must implement.
-type ValidityChecker interface {
+// Checker is the base interface from which type validators must implement.
+type Checker interface {
 	// GetErrors is the method which is actually called to run validation. It should return a slice of validation rules
 	// which are invalid, or nil if there are no invalid rules.
 	GetItem() interface{}
@@ -15,13 +15,13 @@ type ValidityChecker interface {
 	GetErrors() []string
 }
 
-// GetErrors runs the validation! What it does is, for each validation rule in the format "rule:arg1,arg2". Surrounding
+// GetCheckerErrors runs the validation! What it does is, for each validation rule in the format "rule:arg1,arg2". Surrounding
 // spaces will be trimmed out. It attempts to call a function defined like:
 //
 //		func ValidateRule(arg1 string, arg2 string) bool { ... }
 //
 // It must return a boolean value (true if validation passed, false if it did not) and take string arguments.
-func GetCheckerErrors(rules []string, instance ValidityChecker) []string {
+func GetCheckerErrors(rules []string, instance Checker) []string {
 	errors := []string{}
 
 	for _, rule := range rules {

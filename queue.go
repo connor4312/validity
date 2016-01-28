@@ -5,26 +5,26 @@ import (
 	"strconv"
 )
 
-// This queue object is where we're going to store all our data related to validation of a particular set.
+// Queue object is where we're going to store all our data related to validation of a particular set.
 // It should probably not be used directly, unless you're really going for better control over things.
-type ValidityQueue struct {
+type Queue struct {
 	// A list of checkers to run. Each conformer of ValidityChecker corresponds to a data type and has unique
 	// validation checks which it can run. Each individual ValidityChecker is responsible for storing a data point,
 	// the key of the data point, and the rules intended to be run against the data point.
-	Checkers []ValidityChecker
+	Checkers []Checker
 	// Data is a map of the raw input data for the queue to parse. This is set by ValidateMap, usually.
 	Data    map[string]interface{}
 	Rules   ValidationRules
 	Results *ValidationResults
 }
 
-// ValidityParsers is a map of functions to parse the given types with. Each one is responsible for converting the value
-// to the correct type (if possible) and inserting an appropriate checker in the ValidityQueue, or adding an error to
+// Parsers is a map of functions to parse the given types with. Each one is responsible for converting the value
+// to the correct type (if possible) and inserting an appropriate checker in the Queue, or adding an error to
 // the output (if not possible to convert). By default these convert to the highest precision available. That is,
 // int64, float64, and string.
 //
 // Apologies if this is not The Go Way™, put in a PR if you have a better solution :)
-type ValidityParsers struct{}
+type Parsers struct{}
 
 // Run is reponsible for resetting the results, then running parsers/checkers. The actual validation occurs in two
 // stages. First, the data is run through to have its types fixed and appropriate checkers added to the queue. Inability
@@ -33,7 +33,7 @@ type ValidityParsers struct{}
 // In the second stage, each checker is run. The checker simply returns a slice of any validators which did not pass,
 // empty if everything is good and happy. We take that output and affix it onto the results appropriately. It is also in
 // this stage that, if everything passed, the converted, safe value is put in the ValidationResult.Data map.
-func (c ValidityQueue) Run() {
+func (c Queue) Run() {
 	c.Results.IsValid = true
 	c.Results.Errors = map[string][]string{}
 	c.Results.Data = map[string]interface{}{}
@@ -42,8 +42,8 @@ func (c ValidityQueue) Run() {
 	c.RunCheckers()
 }
 
-// Runs the parsers, for the second stage. See Run() for explaination.
-func (c *ValidityQueue) RunParsers() {
+// RunParsers runs the parsers, for the second stage. See Run() for explaination.
+func (c *Queue) RunParsers() {
 	for key, validator := range c.Rules {
 		item, exists := c.Data[key]
 
@@ -54,13 +54,13 @@ func (c *ValidityQueue) RunParsers() {
 			continue
 		}
 
-		// This calls a function like "ParseInt" present on the ValidityParsers map.
-		callIn(ValidityParsers{}, "Parse"+validator[0], c, key, item, validator)
+		// This calls a function like "ParseInt" present on the Parsers map.
+		callIn(Parsers{}, "Parse"+validator[0], c, key, item, validator)
 	}
 }
 
-// Runs the checkers, for the second stage. See Run() for explaination.
-func (c *ValidityQueue) RunCheckers() {
+// RunCheckers runs the checkers, for the second stage. See Run() for explaination.
+func (c *Queue) RunCheckers() {
 	for _, checker := range c.Checkers {
 		// Add errors from the checker. If no errors occured, the chcker returns
 		// an empty slice and no errors are added.
@@ -74,9 +74,9 @@ func (c *ValidityQueue) RunCheckers() {
 	}
 }
 
-// Calling AddError inserts an error into the Results.Error, with the specified key. If there are already more than
+// AddError inserts an error into the Results.Error, with the specified key. If there are already more than
 // zero errors for the key, then the error is simply appended on the list.
-func (c *ValidityQueue) AddError(key string, error string) {
+func (c *Queue) AddError(key string, error string) {
 	if _, exists := c.Results.Errors[key]; !exists {
 		c.Results.Errors[key] = []string{}
 	}
@@ -85,17 +85,17 @@ func (c *ValidityQueue) AddError(key string, error string) {
 	c.Results.IsValid = false
 }
 
-// Inserts a list of errors for the given key into the Results.Error.
+// AddErrors inserts a list of errors for the given key into the Results.Error.
 // Any existing errors are not replaced, only appended to.
-func (c *ValidityQueue) AddErrors(key string, errors []string) {
+func (c *Queue) AddErrors(key string, errors []string) {
 	for _, error := range errors {
 		c.AddError(key, error)
 	}
 }
 
-// Converts the given value to an integer. Parses it as a string. Not super amazing, but the most elegant solution that
+// ParseInt converts the given value to an integer. Parses it as a string. Not super amazing, but the most elegant solution that
 // I was able to find. Before we used reflection of original type with switch statements... *shudders*
-func (v ValidityParsers) ParseInt(c *ValidityQueue, key string, value interface{}, rules []string) {
+func (v Parsers) ParseInt(c *Queue, key string, value interface{}, rules []string) {
 	item := fmt.Sprintf("%v", value)
 
 	val, err := strconv.ParseInt(item, 10, 64)
@@ -107,8 +107,8 @@ func (v ValidityParsers) ParseInt(c *ValidityQueue, key string, value interface{
 	c.Checkers = append(c.Checkers, IntValidityChecker{Key: key, Item: val, Rules: rules})
 }
 
-// Converter the given value to a float, using the same method as was used to convert to int.
-func (v ValidityParsers) ParseFloat(c *ValidityQueue, key string, value interface{}, rules []string) {
+// ParseFloat converte the given value to a float, using the same method as was used to convert to int.
+func (v Parsers) ParseFloat(c *Queue, key string, value interface{}, rules []string) {
 	item := fmt.Sprintf("%v", value)
 
 	val, err := strconv.ParseFloat(item, 64)
@@ -120,7 +120,7 @@ func (v ValidityParsers) ParseFloat(c *ValidityQueue, key string, value interfac
 	c.Checkers = append(c.Checkers, FloatValidityChecker{Key: key, Item: val, Rules: rules})
 }
 
-// Converts the given value to a string.
-func (v ValidityParsers) ParseString(c *ValidityQueue, key string, item interface{}, rules []string) {
+// ParseString converts the given value to a string.
+func (v Parsers) ParseString(c *Queue, key string, item interface{}, rules []string) {
 	c.Checkers = append(c.Checkers, StringValidityChecker{Key: key, Item: fmt.Sprintf("%s", item), Rules: rules})
 }

@@ -296,7 +296,7 @@ func TestStringValidateBetweenInclusivePassUpperB(t *testing.T) {
 }
 
 func TestStringValidateDatePass(t *testing.T) {
-	data := TestStruct{Foo: "Jan 2, 2006 at 3:04pm (MST)"}
+	data := TestStruct{Foo: "28.01.2016T14:03:15"}
 	rules := ValidationRules{"Foo": []string{"String", "Date"}}
 
 	results := ValidateStruct(data, rules)
@@ -331,26 +331,6 @@ func TestStringValidateEmailFail(t *testing.T) {
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
 		t.Errorf("String email validator does not fail.")
-	}
-}
-
-func TestStringValidateNamePass(t *testing.T) {
-	data := TestStruct{Foo: "Dr. Ion Bastinaru 2"}
-	rules := ValidationRules{"Foo": []string{"String", "full_name"}}
-
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("String full-name validator does not accept a good name.")
-	}
-}
-
-func TestStringValidateNameFail(t *testing.T) {
-	data := TestStruct{Foo: "Dr. Ion-Bastinaru 2"}
-	rules := ValidationRules{"Foo": []string{"String", "full_name"}}
-
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("String full-name validator does not reject a bad name.")
 	}
 }
 

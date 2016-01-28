@@ -158,19 +158,6 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
 }
 
-// ValidateBetweenStrict checks if the number: min < len(number) > max
-func (v StringValidityChecker) ValidateBetweenStrict(min string, max string) bool {
-	length := len([]rune((v.Item)))
-
-	return length > v.toInt(min) && length < v.toInt(max)
-}
-
-// ValidateBetween checks if the number: min <= len(number) => max
-func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
-	length := len([]rune(v.Item))
-	return length >= v.toInt(min) && length <= v.toInt(max)
-}
-
 // ValidateDate validates a date in the format "02.01.2006T15:04:05"
 func (v StringValidityChecker) ValidateDate() bool {
 	dateFormat := "02.01.2006T15:04:05"
@@ -196,6 +183,19 @@ func (v StringValidityChecker) ValidateMax(length string) bool {
 // ValidateMin checks if the number: min <= len(number)
 func (v StringValidityChecker) ValidateMin(length string) bool {
 	return len([]rune(v.Item)) >= v.toInt(length)
+}
+
+// ValidateBetweenStrict checks if the number: min < len(number) > max
+func (v StringValidityChecker) ValidateBetweenStrict(min string, max string) bool {
+	length := len([]rune((v.Item)))
+
+	return length > v.toInt(min) && length < v.toInt(max)
+}
+
+// ValidateBetween checks if the number: min <= len(number) => max
+func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
+	length := len([]rune(v.Item))
+	return length >= v.toInt(min) && length <= v.toInt(max)
 }
 
 // ValidateRegexp validates a regex
