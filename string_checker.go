@@ -50,6 +50,50 @@ func (v StringValidityChecker) checkRegexp(r string) bool {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
+// ValidateCif checks the romanian id for company
+func (v StringValidityChecker) ValidateCif() bool {
+
+	rawCif := v.Item
+
+	if lenght := len(rawCif); lenght > 10 || lenght < 6 {
+		log.Println("The length must be between 6 and 10 characters")
+		return false
+	}
+
+	intCif, errInt := strconv.Atoi(rawCif)
+
+	if errInt != nil {
+		log.Println("The CIF must contain only integers")
+		return false
+	}
+
+	var (
+		controlNumber = 753217532
+		controlDigit1 = intCif % 10
+		controlDigit2 = 0
+	)
+
+	// delete last digit
+	intCif = intCif / 10
+
+	t := 0
+
+	for intCif > 0 {
+		t += (intCif % 10) * (controlNumber % 10)
+
+		intCif = intCif / 10
+		controlNumber = controlNumber / 10
+	}
+
+	controlDigit2 = t * 10 % 11
+
+	if controlDigit2 == 10 {
+		controlDigit2 = 0
+	}
+
+	return controlDigit1 == controlDigit2
+}
+
 // ValidateCnp checks the romanian security id - CNP
 func (v StringValidityChecker) ValidateCnp() bool {
 
