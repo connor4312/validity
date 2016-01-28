@@ -2,31 +2,34 @@ package validity
 
 import (
 	"log"
-	"net"
-	"net/url"
 	"regexp"
 	"strconv"
 	"time"
 )
 
+// StringValidityChecker is a validator for string types
 type StringValidityChecker struct {
 	Key   string
 	Rules []string
 	Item  string
 }
 
+// GetKey returnst the key
 func (v StringValidityChecker) GetKey() string {
 	return v.Key
 }
 
+// GetItem returns the item
 func (v StringValidityChecker) GetItem() interface{} {
 	return v.Item
 }
 
+// GetRules returns the rules
 func (v StringValidityChecker) GetRules() []string {
 	return v.Rules
 }
 
+// GetErrors returns the errors
 func (v StringValidityChecker) GetErrors() []string {
 	return GetCheckerErrors(v.Rules[1:], &v)
 }
@@ -43,10 +46,6 @@ func (v StringValidityChecker) checkRegexp(r string) bool {
 	return expression.MatchString(v.Item)
 }
 
-func (v StringValidityChecker) parseIP() net.IP {
-	return net.ParseIP(v.Item)
-}
-
 //----------------------------------------------------------------------------------------------------------------------
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
@@ -54,6 +53,11 @@ func (v StringValidityChecker) parseIP() net.IP {
 func (v StringValidityChecker) ValidateCnp() bool {
 
 	rawCNP := v.Item
+
+	if len(rawCNP) != 13 {
+		log.Println("The length of CNP is not 13 characters")
+		return false
+	}
 
 	var (
 		bigSum    int
@@ -63,8 +67,6 @@ func (v StringValidityChecker) ValidateCnp() bool {
 		control   = []int{2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9}
 	)
 
-	// iterate
-
 	for i := 0; i < 12; i++ {
 		current, errCurrent := strconv.Atoi(string(rawCNP[i]))
 		if errCurrent != nil {
@@ -73,6 +75,13 @@ func (v StringValidityChecker) ValidateCnp() bool {
 		}
 		bigSum += control[i] * current
 		digits[i] = current
+	}
+
+	// check last digit
+	_, errLastDigit := strconv.Atoi(string(rawCNP[12]))
+	if errLastDigit != nil {
+		log.Println("The character at position " + strconv.Itoa(12) + "[" + string(rawCNP[12]) + "] is not a digit")
+		return false
 	}
 
 	// Sex -  allowed only 1 -> 9
@@ -124,18 +133,17 @@ func (v StringValidityChecker) ValidateCnp() bool {
 
 	if int(t.Year()) != year || int(t.Month()) != month || t.Day() != day {
 		log.Println("The date does not exist: " + strconv.Itoa(year) + "/" + strconv.Itoa(month) + "/" + strconv.Itoa(day))
+		return false
 	}
 
 	// County - allowed only 1 -> 52
-
 	county := digits[7]*10 + digits[8]
 	if county < 1 || county > 52 {
-		log.Println("Wrong county: " + strconv.Itoa(county))
+		log.Println("Wrong county id: " + strconv.Itoa(county))
 		return false
 	}
 
 	// Number - allowed only 001 --> 999
-
 	number := digits[9]*100 + digits[10]*10 + digits[11]
 	if number < 1 || number > 999 {
 		log.Println("Wrong number: " + strconv.Itoa(number))
@@ -143,31 +151,11 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	}
 
 	// Check control
-
 	ctrlDigit = bigSum % 11
-
 	if ctrlDigit == 10 {
 		ctrlDigit = 1
 	}
-
 	return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
-
-}
-
-func (v StringValidityChecker) ValidateAccepted() bool {
-	return v.Item == "yes" || v.Item == "on" || v.Item == "1"
-}
-
-func (v StringValidityChecker) ValidateAlpha() bool {
-	return v.checkRegexp("^[A-Za-z]*$")
-}
-
-func (v StringValidityChecker) ValidateAlphaDash() bool {
-	return v.checkRegexp("^[A-Za-z0-9\\-_]*$")
-}
-
-func (v StringValidityChecker) ValidateAlphaNum() bool {
-	return v.checkRegexp("^[A-Za-z0-9]*$")
 }
 
 func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
@@ -191,22 +179,6 @@ func (v StringValidityChecker) ValidateEmail() bool {
 	return v.checkRegexp("^.+\\@.+\\..+$")
 }
 
-func (v StringValidityChecker) ValidateIpv4() bool {
-	parsed := v.parseIP()
-
-	return parsed != nil && parsed.To4() != nil
-}
-
-func (v StringValidityChecker) ValidateIpv6() bool {
-	parsed := v.parseIP()
-
-	return parsed != nil && parsed.To16() != nil
-}
-
-func (v StringValidityChecker) ValidateIp() bool {
-	return v.parseIP() != nil
-}
-
 func (v StringValidityChecker) ValidateLen(length string) bool {
 	return len([]rune(v.Item)) != v.toInt(length)
 }
@@ -225,10 +197,4 @@ func (v StringValidityChecker) ValidateMin(length string) bool {
 
 func (v StringValidityChecker) ValidateRegexp(r string) bool {
 	return v.checkRegexp(r)
-}
-
-func (v StringValidityChecker) ValidateUrl() bool {
-	_, err := url.ParseRequestURI(v.Item)
-
-	return err == nil
 }
