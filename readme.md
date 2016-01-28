@@ -72,11 +72,11 @@ Possible rules include:
  * `alpha_dash`: The field under validation may have alpha-numeric characters, as well as dashes and underscores. Permits string types.
  * `alpha_num`: The field under validation must be entirely alpha-numeric characters. Permits string types.
  * `between:,a,b`: The field under validation must be between "a" and "b" characters long, or between the values a and b (if numeric). Permits string and numeric types.
- * `between_inclusive:,a,b`	The field under validation must be between "a" and "b" *(including the boundaries)* characters long, or between the values a and b inclusive a and b (if numeric). Permits string and numeric types. (is is the same as min, max combined)
+ * `between:,a,b`	The field under validation must be between "a" and "b" *(including the boundaries)* characters long, or between the values a and b inclusive a and b (if numeric). Permits string and numeric types. (is is the same as min, max combined)
  * `date`: The field under validation must parse to a date. Accepts string types.
  * `digits:num`: The field under validation must have exactly `num` of digits. Accepts numeric types.
  * `digits_between:a,b`: The field under validation must have between (a, b) digits. Accepts numeric types.
- * `digits_between_inclusive:a,b`: The field under validation must have between [a, b] digits. Accepts numeric types.
+ * `digits_between:a,b`: The field under validation must have between [a, b] digits. Accepts numeric types.
  * `email`: The field under validation must be an email.
  * `ip`: The field under validation must be an IP, either ipv4 or ipv6. Accepts string types.
  * `ipv4`: The field under validation must be in IPv4 format. Accepts string types.
@@ -124,7 +124,7 @@ You can use the translator in 2 ways:
 
   The `TranslateTo` method of ValidityResults is a factory method which creates the translator. It takes care of the translation process.
 
-* translate one particular rule by: creating a translator and calling `TranslateRule(method, advance)`. For instance, `TranslateRule('between_inclusive', '7,90')`
+* translate one particular rule by: creating a translator and calling `TranslateRule(method, advance)`. For instance, `TranslateRule('between', '7,90')`
 
 There are 2 languages supported:
 

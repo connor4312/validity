@@ -247,7 +247,7 @@ func TestStringValidateBetweenFailUpper(t *testing.T) {
 
 func TestStringValidateBetweenInclusivePass(t *testing.T) {
 	data := TestStruct{Foo: "fooo"}
-	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -257,7 +257,7 @@ func TestStringValidateBetweenInclusivePass(t *testing.T) {
 
 func TestStringValidateBetweenInclusiveFailLower(t *testing.T) {
 	data := TestStruct{Foo: "fo"}
-	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -267,7 +267,7 @@ func TestStringValidateBetweenInclusiveFailLower(t *testing.T) {
 
 func TestStringValidateBetweenInclusiveFailUpper(t *testing.T) {
 	data := TestStruct{Foo: "fooooooooooooooo"}
-	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -277,7 +277,7 @@ func TestStringValidateBetweenInclusiveFailUpper(t *testing.T) {
 
 func TestStringValidateBetweenInclusivePassLowerB(t *testing.T) {
 	data := TestStruct{Foo: "foo"}
-	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -287,7 +287,7 @@ func TestStringValidateBetweenInclusivePassLowerB(t *testing.T) {
 
 func TestStringValidateBetweenInclusivePassUpperB(t *testing.T) {
 	data := TestStruct{Foo: "f23456"}
-	rules := ValidationRules{"Foo": []string{"String", "between_inclusive:3,6"}}
+	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {

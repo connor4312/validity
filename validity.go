@@ -26,7 +26,7 @@ import (
 //		alpha_num  			The field under validation must be entirely alpha-numeric characters. Permits string types.
 //      between:,a,b  		The field under validation must be between "a" and "b" characters long, or between
 // 								the values a and b (if numeric). Permits string and numeric types.
-//      between_inclusive:,a,b  		The field under validation must be between "a" and "b" (inclusive) characters long, or between
+//      between:,a,b  		The field under validation must be between "a" and "b" (inclusive) characters long, or between
 // 								the values a and b inclusive a and b (if numeric). Permits string and numeric types.
 //todo: same:key,v   	  	The field under validation must be equal to another field. Accepts any comparable types.
 //		date            	The field under validation must parse to a date. Accepts string types.
@@ -98,8 +98,8 @@ func (v *ValidationResults) TranslateTo(language string) map[string][]string {
 }
 
 // ExtractMethod returns the method for complex
-// For instance: if you have between_inclusive:8,9 ---> it returns between_inclusive
-// It can be used for older versions which have returned between_inclusive rather than between_inclusive:8,9
+// For instance: if you have between:8,9 ---> it returns between
+// It can be used for older versions which have returned between rather than between:8,9
 func ExtractMethod(element string) string {
 	parts := strings.SplitN(element, ":", 2)
 	return parts[0]

@@ -50,6 +50,7 @@ func (v StringValidityChecker) checkRegexp(r string) bool {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
+// ValidateCnp checks the romanian security id - CNP
 func (v StringValidityChecker) ValidateCnp() bool {
 
 	rawCNP := v.Item
@@ -85,7 +86,6 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	}
 
 	// Sex -  allowed only 1 -> 9
-
 	if digits[0] == 0 {
 		log.Println("Sex can not be 0")
 		return false
@@ -158,43 +158,47 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
 }
 
-func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
+// ValidateBetweenStrict checks if the number: min < len(number) > max
+func (v StringValidityChecker) ValidateBetweenStrict(min string, max string) bool {
 	length := len([]rune((v.Item)))
 
 	return length > v.toInt(min) && length < v.toInt(max)
 }
 
-func (v StringValidityChecker) ValidateBetweenInclusive(min string, max string) bool {
+// ValidateBetween checks if the number: min <= len(number) => max
+func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
 	length := len([]rune(v.Item))
 	return length >= v.toInt(min) && length <= v.toInt(max)
 }
 
+// ValidateDate validates a date in the format "02.01.2006T15:04:05"
 func (v StringValidityChecker) ValidateDate() bool {
-	_, err := time.Parse("Jan 2, 2006 at 3:04pm (MST)", v.Item)
-
+	dateFormat := "02.01.2006T15:04:05"
+	_, err := time.Parse(dateFormat, v.Item)
 	return err == nil
 }
 
+// ValidateEmail checks if the value is an email
 func (v StringValidityChecker) ValidateEmail() bool {
 	return v.checkRegexp("^.+\\@.+\\..+$")
 }
 
+// ValidateLen checks if the real len of item is that number
 func (v StringValidityChecker) ValidateLen(length string) bool {
 	return len([]rune(v.Item)) != v.toInt(length)
 }
 
-func (v StringValidityChecker) ValidateFullName() bool {
-	return v.checkRegexp(`^[A-Za-z0-9\s\.]*$`)
-}
-
+// ValidateMax checks if the number: len(number) <= max
 func (v StringValidityChecker) ValidateMax(length string) bool {
 	return len([]rune(v.Item)) <= v.toInt(length)
 }
 
+// ValidateMin checks if the number: min <= len(number)
 func (v StringValidityChecker) ValidateMin(length string) bool {
 	return len([]rune(v.Item)) >= v.toInt(length)
 }
 
+// ValidateRegexp validates a regex
 func (v StringValidityChecker) ValidateRegexp(r string) bool {
 	return v.checkRegexp(r)
 }
