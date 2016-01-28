@@ -1,9 +1,9 @@
 package validity
 
 import (
-	"unicode"
-	"strings"
 	"reflect"
+	"strings"
+	"unicode"
 )
 
 // Uppercases the first letter of the given string. This reasonably
@@ -22,7 +22,7 @@ func firstToUpper(s string) string {
 // Converts a snake_cased string to a camelCased one.
 func snakeToCamel(s string) string {
 	parts := strings.Split(s, "_")
-	out   := parts[0]
+	out := parts[0]
 
 	for _, part := range parts[1:] {
 		out += firstToUpper(part)
@@ -38,7 +38,7 @@ func snakeToStudly(s string) string {
 
 // Calls the function `name` on the map `m` with the given splat of arguments, and return the result (if possible).
 // Returns an error in the event of a parameter mismatch.
-func callIn(m interface{}, name string, params ... interface{}) (result []reflect.Value, err error) {
+func callIn(m interface{}, name string, params ...interface{}) (result []reflect.Value, err error) {
 	f := reflect.ValueOf(m)
 
 	in := make([]reflect.Value, len(params))

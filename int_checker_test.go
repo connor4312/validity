@@ -4,25 +4,6 @@ import (
 	"testing"
 )
 
-func TestIntValidateAcceptedPass(t *testing.T) {
-	data := TestStruct{Bar: 1}
-	rules := ValidationRules{"Bar": []string{"Int", "Accepted"}}
-
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Int accepted validator does not pass.")
-	}
-}
-func TestIntValidateAcceptedFail(t *testing.T) {
-	data := TestStruct{Bar: 0}
-	rules := ValidationRules{"Bar": []string{"Int", "Accepted"}}
-
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int accepted validator does not fail.")
-	}
-}
-
 func TestIntValidateBetweenPass(t *testing.T) {
 	data := TestStruct{Bar: 5}
 	rules := ValidationRules{"Bar": []string{"Int", "between:3,6"}}
