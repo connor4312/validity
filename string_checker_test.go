@@ -188,6 +188,8 @@ func TestStringInvalidCNP(t *testing.T) {
 		"1930426450037",
 		"1930426450038",
 		"1930426450039",
+
+		"1730513635451",
 	}
 	for _, cnp := range list {
 		if isValidCNP(cnp) {
