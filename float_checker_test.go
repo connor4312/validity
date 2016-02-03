@@ -6,7 +6,7 @@ import (
 
 func TestFloatValidateBetweenPass(t *testing.T) {
 	data := TestStruct{Baz: 5}
-	rules := ValidationRules{"Baz": []string{"Float", "between:3,6"}}
+	rules := Rules{"Baz": []string{"Float", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -15,7 +15,7 @@ func TestFloatValidateBetweenPass(t *testing.T) {
 }
 func TestFloatValidateBetweenFailLower(t *testing.T) {
 	data := TestStruct{Baz: 1}
-	rules := ValidationRules{"Baz": []string{"Float", "between:3,6"}}
+	rules := Rules{"Baz": []string{"Float", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -24,7 +24,7 @@ func TestFloatValidateBetweenFailLower(t *testing.T) {
 }
 func TestFloatValidateBetweenFailUpper(t *testing.T) {
 	data := TestStruct{Baz: 8}
-	rules := ValidationRules{"Baz": []string{"Float", "between:3,6"}}
+	rules := Rules{"Baz": []string{"Float", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -34,7 +34,7 @@ func TestFloatValidateBetweenFailUpper(t *testing.T) {
 
 func TestFloatValidateDigitsPass(t *testing.T) {
 	data := TestStruct{Baz: 500.5252}
-	rules := ValidationRules{"Baz": []string{"Float", "digits:3"}}
+	rules := Rules{"Baz": []string{"Float", "digits:3"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -43,7 +43,7 @@ func TestFloatValidateDigitsPass(t *testing.T) {
 }
 func TestFloatValidateBetweenFail(t *testing.T) {
 	data := TestStruct{Baz: 500.5}
-	rules := ValidationRules{"Baz": []string{"Float", "digits:4"}}
+	rules := Rules{"Baz": []string{"Float", "digits:4"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -53,7 +53,7 @@ func TestFloatValidateBetweenFail(t *testing.T) {
 
 func TestFloatValidateMaxPass(t *testing.T) {
 	data := TestStruct{Baz: 4}
-	rules := ValidationRules{"Baz": []string{"Float", "max:5"}}
+	rules := Rules{"Baz": []string{"Float", "max:5"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -62,7 +62,7 @@ func TestFloatValidateMaxPass(t *testing.T) {
 }
 func TestFloatValidateMaxFail(t *testing.T) {
 	data := TestStruct{Baz: 8}
-	rules := ValidationRules{"Baz": []string{"Float", "max:5"}}
+	rules := Rules{"Baz": []string{"Float", "max:5"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -72,7 +72,7 @@ func TestFloatValidateMaxFail(t *testing.T) {
 
 func TestFloatValidateMinPass(t *testing.T) {
 	data := TestStruct{Baz: 8}
-	rules := ValidationRules{"Baz": []string{"Float", "min:5"}}
+	rules := Rules{"Baz": []string{"Float", "min:5"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -81,7 +81,7 @@ func TestFloatValidateMinPass(t *testing.T) {
 }
 func TestFloatValidateMinFail(t *testing.T) {
 	data := TestStruct{Baz: 4}
-	rules := ValidationRules{"Baz": []string{"Float", "min:5"}}
+	rules := Rules{"Baz": []string{"Float", "min:5"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {

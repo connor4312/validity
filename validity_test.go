@@ -23,7 +23,7 @@ func TestValidatesMap(t *testing.T) {
 	data := make(map[string]interface{})
 	data["foo"] = v
 
-	rules := ValidationRules{"foo": []string{"Int"}}
+	rules := Rules{"foo": []string{"Int"}}
 
 	results := ValidateMap(data, rules)
 	if !results.IsValid {
@@ -33,7 +33,7 @@ func TestValidatesMap(t *testing.T) {
 
 func TestValidatesStruct(t *testing.T) {
 	data := TestStruct{Foo: "42"}
-	rules := ValidationRules{"Foo": []string{"Int"}}
+	rules := Rules{"Foo": []string{"Int"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -55,7 +55,7 @@ func TestValidatesStructTags(t *testing.T) {
 
 func TestHandlesBasicTypeConversions(t *testing.T) {
 	data := TestStruct{Foo: "42", Bar: 55, Baz: 12.34}
-	rules := ValidationRules{"Foo": []string{"Int"}, "Bar": []string{"String"}, "Baz": []string{"Float"}}
+	rules := Rules{"Foo": []string{"Int"}, "Bar": []string{"String"}, "Baz": []string{"Float"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -65,7 +65,7 @@ func TestHandlesBasicTypeConversions(t *testing.T) {
 
 func TestHandlesInvalidTypeConversions(t *testing.T) {
 	data := TestStruct{Foo: "Not A Number!", Bar: 1234, Baz: 12.34}
-	rules := ValidationRules{"Foo": []string{"Int"}, "Bar": []string{"String"}, "Baz": []string{"Float"}}
+	rules := Rules{"Foo": []string{"Int"}, "Bar": []string{"String"}, "Baz": []string{"Float"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -75,7 +75,7 @@ func TestHandlesInvalidTypeConversions(t *testing.T) {
 
 func TestEnforcesRequired(t *testing.T) {
 	data := make(map[string]interface{})
-	rules := ValidationRules{"Foo": []string{"Int", "required"}}
+	rules := Rules{"Foo": []string{"Int", "required"}}
 
 	results := ValidateMap(data, rules)
 	if results.IsValid {
@@ -85,7 +85,7 @@ func TestEnforcesRequired(t *testing.T) {
 
 func TestAllowsOptional(t *testing.T) {
 	data := make(map[string]interface{})
-	rules := ValidationRules{"Foo": []string{"Int"}}
+	rules := Rules{"Foo": []string{"Int"}}
 
 	results := ValidateMap(data, rules)
 	if !results.IsValid {
@@ -95,7 +95,7 @@ func TestAllowsOptional(t *testing.T) {
 
 func TestReturnsProperResultsOnTypeFail(t *testing.T) {
 	data := TestStruct{Foo: "Not A Number!"}
-	rules := ValidationRules{"Foo": []string{"Int"}}
+	rules := Rules{"Foo": []string{"Int"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -111,7 +111,7 @@ func TestReturnsProperResultsOnTypeFail(t *testing.T) {
 
 func TestReturnsProperResultsOnFailedValidators(t *testing.T) {
 	data := TestStruct{Foo: "42"}
-	rules := ValidationRules{"Foo": []string{"Int", "Min:50", "Digits:3", "Max: 60"}}
+	rules := Rules{"Foo": []string{"Int", "Min:50", "Digits:3", "Max: 60"}}
 
 	results := ValidateStruct(data, rules)
 
@@ -125,7 +125,7 @@ func TestReturnsProperResultsOnFailedValidators(t *testing.T) {
 
 func TestReturnsProperResultsOnSuccess(t *testing.T) {
 	data := TestStruct{Foo: "42"}
-	rules := ValidationRules{"Foo": []string{"Int", "Min:40", "Digits:2", "Max: 60"}}
+	rules := Rules{"Foo": []string{"Int", "Min:40", "Digits:2", "Max: 60"}}
 
 	results := ValidateStruct(data, rules)
 

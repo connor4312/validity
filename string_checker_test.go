@@ -325,7 +325,7 @@ func TestStringValidCNP(t *testing.T) {
 
 func TestStringValidateBetweenPass(t *testing.T) {
 	data := TestStruct{Foo: "fooo"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -335,7 +335,7 @@ func TestStringValidateBetweenPass(t *testing.T) {
 
 func TestStringValidateBetweenFailLower(t *testing.T) {
 	data := TestStruct{Foo: "fo"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -345,7 +345,7 @@ func TestStringValidateBetweenFailLower(t *testing.T) {
 
 func TestStringValidateBetweenFailUpper(t *testing.T) {
 	data := TestStruct{Foo: "fooooooooooooooo"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -355,7 +355,7 @@ func TestStringValidateBetweenFailUpper(t *testing.T) {
 
 func TestStringValidateBetweenInclusivePass(t *testing.T) {
 	data := TestStruct{Foo: "fooo"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -365,7 +365,7 @@ func TestStringValidateBetweenInclusivePass(t *testing.T) {
 
 func TestStringValidateBetweenInclusiveFailLower(t *testing.T) {
 	data := TestStruct{Foo: "fo"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -375,7 +375,7 @@ func TestStringValidateBetweenInclusiveFailLower(t *testing.T) {
 
 func TestStringValidateBetweenInclusiveFailUpper(t *testing.T) {
 	data := TestStruct{Foo: "fooooooooooooooo"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -385,7 +385,7 @@ func TestStringValidateBetweenInclusiveFailUpper(t *testing.T) {
 
 func TestStringValidateBetweenInclusivePassLowerB(t *testing.T) {
 	data := TestStruct{Foo: "foo"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -395,7 +395,7 @@ func TestStringValidateBetweenInclusivePassLowerB(t *testing.T) {
 
 func TestStringValidateBetweenInclusivePassUpperB(t *testing.T) {
 	data := TestStruct{Foo: "f23456"}
-	rules := ValidationRules{"Foo": []string{"String", "between:3,6"}}
+	rules := Rules{"Foo": []string{"String", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -405,7 +405,7 @@ func TestStringValidateBetweenInclusivePassUpperB(t *testing.T) {
 
 func TestStringValidateDatePass(t *testing.T) {
 	data := TestStruct{Foo: "28.01.2016T14:03:15"}
-	rules := ValidationRules{"Foo": []string{"String", "Date"}}
+	rules := Rules{"Foo": []string{"String", "Date"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -415,7 +415,7 @@ func TestStringValidateDatePass(t *testing.T) {
 
 func TestStringValidateDateFail(t *testing.T) {
 	data := TestStruct{Foo: "Jan 2, 20Nope not a date!06 at 3:04pm (MST)"}
-	rules := ValidationRules{"Foo": []string{"String", "Date"}}
+	rules := Rules{"Foo": []string{"String", "Date"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -425,7 +425,7 @@ func TestStringValidateDateFail(t *testing.T) {
 
 func TestStringValidateEmailPass(t *testing.T) {
 	data := TestStruct{Foo: "connor@peet.io"}
-	rules := ValidationRules{"Foo": []string{"String", "Email"}}
+	rules := Rules{"Foo": []string{"String", "Email"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -434,7 +434,7 @@ func TestStringValidateEmailPass(t *testing.T) {
 }
 func TestStringValidateEmailFail(t *testing.T) {
 	data := TestStruct{Foo: "connor@invalid"}
-	rules := ValidationRules{"Foo": []string{"String", "Email"}}
+	rules := Rules{"Foo": []string{"String", "Email"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -444,7 +444,7 @@ func TestStringValidateEmailFail(t *testing.T) {
 
 func TestStringValidateMaxPass(t *testing.T) {
 	data := TestStruct{Foo: "foo"}
-	rules := ValidationRules{"Foo": []string{"String", "Max:4"}}
+	rules := Rules{"Foo": []string{"String", "Max:4"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -454,7 +454,7 @@ func TestStringValidateMaxPass(t *testing.T) {
 
 func TestStringValidateMaxFail(t *testing.T) {
 	data := TestStruct{Foo: "fooooooo"}
-	rules := ValidationRules{"Foo": []string{"String", "Max:4"}}
+	rules := Rules{"Foo": []string{"String", "Max:4"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -464,7 +464,7 @@ func TestStringValidateMaxFail(t *testing.T) {
 
 func TestStringValidateMinPass(t *testing.T) {
 	data := TestStruct{Foo: "fooooooo"}
-	rules := ValidationRules{"Foo": []string{"String", "Min:4"}}
+	rules := Rules{"Foo": []string{"String", "Min:4"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -474,7 +474,7 @@ func TestStringValidateMinPass(t *testing.T) {
 
 func TestStringValidateMinFail(t *testing.T) {
 	data := TestStruct{Foo: "foo"}
-	rules := ValidationRules{"Foo": []string{"String", "Min:4"}}
+	rules := Rules{"Foo": []string{"String", "Min:4"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -484,7 +484,7 @@ func TestStringValidateMinFail(t *testing.T) {
 
 func TestStringValidateRegexPass(t *testing.T) {
 	data := TestStruct{Foo: "FooBar"}
-	rules := ValidationRules{"Foo": []string{"String", "Regexp:^Fo.*ar$"}}
+	rules := Rules{"Foo": []string{"String", "Regexp:^Fo.*ar$"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -494,7 +494,7 @@ func TestStringValidateRegexPass(t *testing.T) {
 
 func TestStringValidateRegexFail(t *testing.T) {
 	data := TestStruct{Foo: "BarFoo"}
-	rules := ValidationRules{"Foo": []string{"String", "Regexp:^Fo.*ar$"}}
+	rules := Rules{"Foo": []string{"String", "Regexp:^Fo.*ar$"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {

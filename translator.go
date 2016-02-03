@@ -7,7 +7,7 @@ import "strings"
 // It may transform just a particular rule or the entire map
 type Translater interface {
 	TranslateRule(method string, options string) string
-	Translate(results *ValidationResults) map[string][]string
+	Translate(results *Results) map[string][]string
 }
 
 // Translator is the basic type of a translator
@@ -29,7 +29,7 @@ func (translator translator) getMessageBetween(old string) string {
 //
 // And then it passes to the child translator which provides the translation
 //
-func (translator translator) work(child Translater, results *ValidationResults) map[string][]string {
+func (translator translator) work(child Translater, results *Results) map[string][]string {
 	humanMessages := map[string][]string{}
 	for element, fieldErrors := range results.Errors {
 		for _, fullMethod := range fieldErrors {

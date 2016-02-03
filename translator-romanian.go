@@ -12,7 +12,7 @@ type RomanianTranslator struct {
 //
 // Translate transforms the error messages from result set to an array of
 // human messages
-func (translator RomanianTranslator) Translate(results *ValidationResults) map[string][]string {
+func (translator RomanianTranslator) Translate(results *Results) map[string][]string {
 	return translator.work(translator, results)
 }
 

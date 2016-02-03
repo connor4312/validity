@@ -14,8 +14,8 @@ type Queue struct {
 	Checkers []Checker
 	// Data is a map of the raw input data for the queue to parse. This is set by ValidateMap, usually.
 	Data    map[string]interface{}
-	Rules   ValidationRules
-	Results *ValidationResults
+	Rules   Rules
+	Results *Results
 }
 
 // Parsers is a map of functions to parse the given types with. Each one is responsible for converting the value

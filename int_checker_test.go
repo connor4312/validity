@@ -6,7 +6,7 @@ import (
 
 func TestIntValidateBetweenPass(t *testing.T) {
 	data := TestStruct{Bar: 5}
-	rules := ValidationRules{"Bar": []string{"Int", "between:3,6"}}
+	rules := Rules{"Bar": []string{"Int", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -15,7 +15,7 @@ func TestIntValidateBetweenPass(t *testing.T) {
 }
 func TestIntValidateBetweenFailLower(t *testing.T) {
 	data := TestStruct{Bar: 1}
-	rules := ValidationRules{"Bar": []string{"Int", "between:3,6"}}
+	rules := Rules{"Bar": []string{"Int", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -24,7 +24,7 @@ func TestIntValidateBetweenFailLower(t *testing.T) {
 }
 func TestIntValidateBetweenFailUpper(t *testing.T) {
 	data := TestStruct{Bar: 8}
-	rules := ValidationRules{"Bar": []string{"Int", "between:3,6"}}
+	rules := Rules{"Bar": []string{"Int", "between:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -34,7 +34,7 @@ func TestIntValidateBetweenFailUpper(t *testing.T) {
 
 func TestIntValidateDigitsPass(t *testing.T) {
 	data := TestStruct{Bar: 500}
-	rules := ValidationRules{"Bar": []string{"Int", "digits:3"}}
+	rules := Rules{"Bar": []string{"Int", "digits:3"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -43,7 +43,7 @@ func TestIntValidateDigitsPass(t *testing.T) {
 }
 func TestIntValidateBetweenFail(t *testing.T) {
 	data := TestStruct{Bar: 500}
-	rules := ValidationRules{"Bar": []string{"Int", "digits:4"}}
+	rules := Rules{"Bar": []string{"Int", "digits:4"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -53,7 +53,7 @@ func TestIntValidateBetweenFail(t *testing.T) {
 
 func TestIntValidateDigitsBetweenPass(t *testing.T) {
 	data := TestStruct{Bar: 500}
-	rules := ValidationRules{"Bar": []string{"Int", "digits_between:2,4"}}
+	rules := Rules{"Bar": []string{"Int", "digits_between:2,4"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -62,7 +62,7 @@ func TestIntValidateDigitsBetweenPass(t *testing.T) {
 }
 func TestIntValidateDigitsBetweenFailLower(t *testing.T) {
 	data := TestStruct{Bar: 5}
-	rules := ValidationRules{"Bar": []string{"Int", "between:2,4"}}
+	rules := Rules{"Bar": []string{"Int", "between:2,4"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -71,7 +71,7 @@ func TestIntValidateDigitsBetweenFailLower(t *testing.T) {
 }
 func TestIntValidateDigitsBetweenFailUpper(t *testing.T) {
 	data := TestStruct{Bar: 5000000}
-	rules := ValidationRules{"Bar": []string{"Int", "between:2,4"}}
+	rules := Rules{"Bar": []string{"Int", "between:2,4"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -81,7 +81,7 @@ func TestIntValidateDigitsBetweenFailUpper(t *testing.T) {
 
 func TestIntValidateMaxPass(t *testing.T) {
 	data := TestStruct{Bar: 4}
-	rules := ValidationRules{"Bar": []string{"Int", "max:5"}}
+	rules := Rules{"Bar": []string{"Int", "max:5"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -90,7 +90,7 @@ func TestIntValidateMaxPass(t *testing.T) {
 }
 func TestIntValidateMaxFail(t *testing.T) {
 	data := TestStruct{Bar: 8}
-	rules := ValidationRules{"Bar": []string{"Int", "max:5"}}
+	rules := Rules{"Bar": []string{"Int", "max:5"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -100,7 +100,7 @@ func TestIntValidateMaxFail(t *testing.T) {
 
 func TestIntValidateMinPass(t *testing.T) {
 	data := TestStruct{Bar: 8}
-	rules := ValidationRules{"Bar": []string{"Int", "min:5"}}
+	rules := Rules{"Bar": []string{"Int", "min:5"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -109,7 +109,7 @@ func TestIntValidateMinPass(t *testing.T) {
 }
 func TestIntValidateMinFail(t *testing.T) {
 	data := TestStruct{Bar: 4}
-	rules := ValidationRules{"Bar": []string{"Int", "min:5"}}
+	rules := Rules{"Bar": []string{"Int", "min:5"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {

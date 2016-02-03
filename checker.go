@@ -7,11 +7,11 @@ import (
 
 // Checker is the base interface from which type validators must implement.
 type Checker interface {
-	// GetErrors is the method which is actually called to run validation. It should return a slice of validation rules
-	// which are invalid, or nil if there are no invalid rules.
 	GetItem() interface{}
 	GetKey() string
 	GetRules() []string
+	// GetErrors is the method which is actually called to run validation. It should return a slice of validation rules
+	// which are invalid, or nil if there are no invalid rules.
 	GetErrors() []string
 }
 

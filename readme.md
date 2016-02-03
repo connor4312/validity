@@ -13,7 +13,7 @@ import "validity"
 
 // Data may be a map[string]interface{}, such as could be returned by JSON decoding.
 // Alternately you can validate a struct using the function ValidateStruct
-rules := ValidationRules{
+rules := Rules{
     "username": []string{"String", "required", "between:4,30"},
     "email":    []string{"String", "email"}
 }
@@ -42,10 +42,10 @@ if !results.IsValid {
 
 #### Basic Maps/Structs
 
-ValidationRules, passed into ValidateMap or ValidateStruct, is a map of strings to slices of "things". The keys of the map should be the field names to validate, in the struct or map of input given. The values should be slices of validators to run. For example:
+Rules, passed into ValidateMap or ValidateStruct, is a map of strings to slices of "things". The keys of the map should be the field names to validate, in the struct or map of input given. The values should be slices of validators to run. For example:
 
 ```go
-rules := ValidationRules{"username": []string{"String", "required", "between: 4, 30"}}
+rules := Rules{"username": []string{"String", "required", "between: 4, 30"}}
 ```
 
 #### Tagged Structs
@@ -89,10 +89,10 @@ Possible rules include:
  * `required`: The field under validation must be present. Accepts any type. Note optionality does not function when trying to validate structs, as it isn't possible to know if their zero values are zero because they aren't set, or because they should actually be zero.
  * `url`: The field under validation must be a URL. Accepts string types.
 
-The return from the validation functions is a struct ValidationResults:
+The return from the validation functions is a struct Results:
 
 ```go
-type ValidationResults struct {
+type Results struct {
 	// Indicates whether the data under validation has passed the set of rules.
 	IsValid bool
 	// This is a map of strings to slices of strings. Its keys will be any validation fields which had an error, and
@@ -153,7 +153,7 @@ func (v validity.StringValidityChecker) ValidateSomethingSilly(suffix string) bo
 You can now use the validator like so:
 
 ```go
-rules := ValidationRules{"someString": []string{"String", "required", "something_silly:String"}}
+rules := Rules{"someString": []string{"String", "required", "something_silly:String"}}
 ```
 
 The validator will now pass only if "someString" is given and is equal to `sillyString`. You will notice that:
