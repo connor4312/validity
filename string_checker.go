@@ -1,9 +1,9 @@
 package validity
 
 import (
-	"log"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -50,20 +50,151 @@ func (v StringValidityChecker) checkRegexp(r string) bool {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
+// ValidateIban validates a bank account
+// It must NOT have whitespaces
+func (v StringValidityChecker) ValidateIban() bool {
+
+	iban := strings.ToUpper(v.Item)
+
+	if len(iban) < 10 {
+		// log.Println("The IBAN must have at least 10 characters")
+		return false
+	}
+
+	countrycode := iban[0:2]
+
+	// Check the country code and find the country specific format
+	bbancountrypatterns := map[string]string{
+		// "AL": "\\d{8}[\\dA-Z]{16}",
+		// "AD": "\\d{8}[\\dA-Z]{12}",
+		// "AT": "\\d{16}",
+		// "AZ": "[\\dA-Z]{4}\\d{20}",
+		// "BE": "\\d{12}",
+		// "BH": "[A-Z]{4}[\\dA-Z]{14}",
+		// "BA": "\\d{16}",
+		// "BR": "\\d{23}[A-Z][\\dA-Z]",
+		// "BG": "[A-Z]{4}\\d{6}[\\dA-Z]{8}",
+		// "CR": "\\d{17}",
+		// "HR": "\\d{17}",
+		// "CY": "\\d{8}[\\dA-Z]{16}",
+		// "CZ": "\\d{20}",
+		// "DK": "\\d{14}",
+		// "DO": "[A-Z]{4}\\d{20}",
+		// "EE": "\\d{16}",
+		// "FO": "\\d{14}",
+		// "FI": "\\d{14}",
+		// "FR": "\\d{10}[\\dA-Z]{11}\\d{2}",
+		// "GE": "[\\dA-Z]{2}\\d{16}",
+		// "DE": "\\d{18}",
+		// "GI": "[A-Z]{4}[\\dA-Z]{15}",
+		// "GR": "\\d{7}[\\dA-Z]{16}",
+		// "GL": "\\d{14}",
+		// "GT": "[\\dA-Z]{4}[\\dA-Z]{20}",
+		// "HU": "\\d{24}",
+		// "IS": "\\d{22}",
+		// "IE": "[\\dA-Z]{4}\\d{14}",
+		// "IL": "\\d{19}",
+		// "IT": "[A-Z]\\d{10}[\\dA-Z]{12}",
+		// "KZ": "\\d{3}[\\dA-Z]{13}",
+		// "KW": "[A-Z]{4}[\\dA-Z]{22}",
+		// "LV": "[A-Z]{4}[\\dA-Z]{13}",
+		// "LB": "\\d{4}[\\dA-Z]{20}",
+		// "LI": "\\d{5}[\\dA-Z]{12}",
+		// "LT": "\\d{16}",
+		// "LU": "\\d{3}[\\dA-Z]{13}",
+		// "MK": "\\d{3}[\\dA-Z]{10}\\d{2}",
+		// "MT": "[A-Z]{4}\\d{5}[\\dA-Z]{18}",
+		// "MR": "\\d{23}",
+		// "MU": "[A-Z]{4}\\d{19}[A-Z]{3}",
+		// "MC": "\\d{10}[\\dA-Z]{11}\\d{2}",
+		// "MD": "[\\dA-Z]{2}\\d{18}",
+		// "ME": "\\d{18}",
+		// "NL": "[A-Z]{4}\\d{10}",
+		// "NO": "\\d{11}",
+		// "PK": "[\\dA-Z]{4}\\d{16}",
+		// "PS": "[\\dA-Z]{4}\\d{21}",
+		// "PL": "\\d{24}",
+		// "PT": "\\d{21}",
+		// "SM": "[A-Z]\\d{10}[\\dA-Z]{12}",
+		// "SA": "\\d{2}[\\dA-Z]{18}",
+		// "RS": "\\d{18}",
+		// "SK": "\\d{20}",
+		// "SI": "\\d{15}",
+		// "ES": "\\d{20}",
+		// "SE": "\\d{20}",
+		// "CH": "\\d{5}[\\dA-Z]{12}",
+		// "TN": "\\d{20}",
+		// "TR": "\\d{5}[\\dA-Z]{17}",
+		// "AE": "\\d{3}\\d{16}",
+		// "GB": "[A-Z]{4}\\d{14}",
+		// "VG": "[\\dA-Z]{4}\\d{16}",
+		"RO": "[A-Z]{4}[\\dA-Z]{16}",
+	}
+
+	_, isInTheList := bbancountrypatterns[countrycode]
+
+	if !isInTheList {
+		// log.Println("The country code is not in the list")
+		return false
+	}
+
+	// // As new countries will start using IBAN in the
+	// // future, we only check if the countrycode is known.
+	// // This prevents false negatives, while almost all
+	// // false positives introduced by this, will be caught
+	// // by the checksum validation below anyway.
+	// // Strict checking should return FALSE for unknown
+	// // countries.
+	// if (typeof bbanpattern !== "undefined") {
+	// 	ibanregexp = new RegExp("^[A-Z]{2}\\d{2}" + bbanpattern + "$", "");
+	// 	if (!(ibanregexp.test(iban))) {
+	// 		return false; // Invalid country specific format
+	// 	}
+	// }
+
+	// Now check the checksum, first convert to digits
+	ibancheck := iban[4:len(iban)] + iban[0:4]
+	lenCheck := len(ibancheck)
+	leadingZeroes := true
+	ibancheckdigits := ""
+
+	for i := 0; i < lenCheck; i++ {
+		character := ibancheck[i]
+		if character != '0' {
+			leadingZeroes = false
+		}
+		if !leadingZeroes {
+			ibancheckdigits += strconv.Itoa(strings.Index("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", string(character)))
+		}
+	}
+
+	// Calculate the result of: ibancheckdigits % 97
+	cRest := 0
+	lenD := len(ibancheckdigits)
+
+	for p := 0; p < lenD; p++ {
+		cChar := ibancheckdigits[p]
+		cOperator, _ := strconv.Atoi("" + strconv.Itoa(cRest) + "" + string(cChar))
+		cRest = cOperator % 97
+	}
+
+	return cRest == 1
+}
+
 // ValidateCif checks the romanian id for company
 func (v StringValidityChecker) ValidateCif() bool {
 
 	rawCif := v.Item
 
 	if lenght := len(rawCif); lenght > 10 || lenght < 6 {
-		log.Println("The length must be between 6 and 10 characters")
+		// log.Println("The length must be between 6 and 10 characters")
 		return false
 	}
 
 	intCif, errInt := strconv.Atoi(rawCif)
 
 	if errInt != nil {
-		log.Println("The CIF must contain only integers")
+		// log.Println("The CIF must contain only integers")
 		return false
 	}
 
@@ -100,7 +231,7 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	rawCNP := v.Item
 
 	if len(rawCNP) != 13 {
-		log.Println("The length of CNP is not 13 characters")
+		// log.Println("The length of CNP is not 13 characters")
 		return false
 	}
 
@@ -115,7 +246,7 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	for i := 0; i < 12; i++ {
 		current, errCurrent := strconv.Atoi(string(rawCNP[i]))
 		if errCurrent != nil {
-			log.Println("The character at position " + strconv.Itoa(i) + "[" + string(rawCNP[i]) + "] is not a digit")
+			// log.Println("The character at position " + strconv.Itoa(i) + "[" + string(rawCNP[i]) + "] is not a digit")
 			return false
 		}
 		bigSum += control[i] * current
@@ -125,13 +256,13 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	// check last digit
 	_, errLastDigit := strconv.Atoi(string(rawCNP[12]))
 	if errLastDigit != nil {
-		log.Println("The character at position " + strconv.Itoa(12) + "[" + string(rawCNP[12]) + "] is not a digit")
+		// log.Println("The character at position " + strconv.Itoa(12) + "[" + string(rawCNP[12]) + "] is not a digit")
 		return false
 	}
 
 	// Sex -  allowed only 1 -> 9
 	if digits[0] == 0 {
-		log.Println("Sex can not be 0")
+		// log.Println("Sex can not be 0")
 		return false
 	}
 
@@ -159,14 +290,14 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	}
 
 	if year < 1800 || year > 2099 {
-		log.Println("Wrong year: " + strconv.Itoa(year))
+		// log.Println("Wrong year: " + strconv.Itoa(year))
 		return false
 	}
 
 	// Month - allowed only 1 -> 12
 	month := digits[3]*10 + digits[4]
 	if month < 1 || month > 12 {
-		log.Println("Wrong month: " + strconv.Itoa(month))
+		// log.Println("Wrong month: " + strconv.Itoa(month))
 		return false
 	}
 
@@ -176,21 +307,21 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	t := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 
 	if int(t.Year()) != year || int(t.Month()) != month || t.Day() != day {
-		log.Println("The date does not exist: " + strconv.Itoa(year) + "/" + strconv.Itoa(month) + "/" + strconv.Itoa(day))
+		// log.Println("The date does not exist: " + strconv.Itoa(year) + "/" + strconv.Itoa(month) + "/" + strconv.Itoa(day))
 		return false
 	}
 
 	// County - allowed only 1 -> 52
 	county := digits[7]*10 + digits[8]
 	if county < 1 || county > 52 {
-		log.Println("Wrong county id: " + strconv.Itoa(county))
+		// log.Println("Wrong county id: " + strconv.Itoa(county))
 		return false
 	}
 
 	// Number - allowed only 001 --> 999
 	number := digits[9]*100 + digits[10]*10 + digits[11]
 	if number < 1 || number > 999 {
-		log.Println("Wrong number: " + strconv.Itoa(number))
+		// log.Println("Wrong number: " + strconv.Itoa(number))
 		return false
 	}
 

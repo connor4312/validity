@@ -4,6 +4,17 @@ import (
 	"testing"
 )
 
+func isValidIban(iban string) bool {
+	data := map[string]interface{}{
+		"IBAN": iban,
+	}
+	rules := map[string][]string{
+		"IBAN": []string{"String", "iban"},
+	}
+	results := ValidateMap(data, rules)
+	return results.IsValid
+}
+
 func isValidCif(cif string) bool {
 	data := map[string]interface{}{
 		"NID": cif,
@@ -13,6 +24,58 @@ func isValidCif(cif string) bool {
 	}
 	results := ValidateMap(data, rules)
 	return results.IsValid
+}
+
+func TestStringInvalidIban(t *testing.T) {
+	list := []string{
+		"",
+		"RO",
+		"RO14CECEGR",
+		"RO14CECEGR0201RON0269170",
+		// "RO14CECEGR0201RON0269171", -- it is good
+		"RO14CECEGR0201RON0269172",
+		"RO14CECEGR0201RON0269173",
+		"RO14CECEGR0201RON0269174",
+		"RO14CECEGR0201RON0269175",
+		"RO14CECEGR0201RON0269176",
+		"RO14CECEGR0201RON0269177",
+		"RO14CECEGR0201RON0269178",
+		"RO14CECEGR0201RON0269179",
+	}
+	for _, iban := range list {
+		if isValidIban(iban) {
+			t.Errorf("The IBAN " + iban + " should NOT pass the test ")
+		}
+	}
+}
+
+func TestStringValidIban(t *testing.T) {
+	list := []string{
+		"RO14CECEGR0201RON0269171",
+		"RO74RZBR0000060001635742",
+		"RO20RNCB0146009062650001",
+		"RO51BRDE190SV09770651900",
+		"RO19RZBR0000060014507080",
+		"RO14CECEGR0201RON0269171",
+		"RO89RNCB0146009060300001",
+		"RO69RNCB0146009053910001",
+		"RO32RNCB0148009659280001",
+		"RO32RZBR0000060008527863",
+		"RO35BRDE190SV17599841900",
+		"RO79RZBR0000060013901108",
+		"RO61RZBR0000060005489107",
+		"RO41CECEGR0230RON0350215",
+		"RO25RZBR0000060008522848",
+		"RO35RNCB0146127215140001",
+		"RO50RZBR0000060006249397",
+
+		"RO74rzbr0000060001635742",
+	}
+	for _, iban := range list {
+		if !isValidIban(iban) {
+			t.Errorf("The IBAN " + iban + " should PASS the test ")
+		}
+	}
 }
 
 func TestStringInvalidCIF(t *testing.T) {
