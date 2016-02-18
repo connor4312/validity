@@ -24,10 +24,14 @@ func (translator RomanianTranslator) TranslateRule(method string, options string
 	switch method {
 	case "accepted":
 		message = "Acest câmp trebuie să fie 'yes', 'on', true, sau 1. Sunt permise valori numerice sau text."
-	case "url", "email", "ipv4", "ipv6", "date", "ip":
+	case "url", "email", "ipv4", "ipv6", "ip":
 		message = "Câmpul trebuie sa fie un " + strings.ToUpper(method) + " valid."
 	case "regex":
 		message = "Trebuie să se potrivească acestei expresii regulate: " + options
+	case "date":
+		message = "Trebuie să fie o data calendaristică validă. De exemplu: 02.01.2006T15:04:05"
+	case "short_date":
+		message = "Trebuie să fie o data calendaristică validă. De exemplu: 02.01.2006"
 	case "cnp":
 		message = "Trebuie să fie un cod numeric personal (CNP) valid"
 	case "between":
