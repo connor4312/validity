@@ -466,6 +466,26 @@ func TestStringValidateBetweenInclusivePassUpperB(t *testing.T) {
 	}
 }
 
+func TestStringValidateShortDatePass(t *testing.T) {
+	data := TestStruct{Foo: "04.10.2015"}
+	rules := Rules{"Foo": []string{"String", "short_date"}}
+
+	results := ValidateStruct(data, rules)
+	if !results.IsValid {
+		t.Errorf("String short date validator does not pass.")
+	}
+}
+
+func TestStringValidateShortDateFail(t *testing.T) {
+	data := TestStruct{Foo: "28.01.2016T14:03:15"}
+	rules := Rules{"Foo": []string{"String", "short_date"}}
+
+	results := ValidateStruct(data, rules)
+	if results.IsValid {
+		t.Errorf("String short date validator does not fail.")
+	}
+}
+
 func TestStringValidateDatePass(t *testing.T) {
 	data := TestStruct{Foo: "28.01.2016T14:03:15"}
 	rules := Rules{"Foo": []string{"String", "Date"}}

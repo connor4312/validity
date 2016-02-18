@@ -333,6 +333,13 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
 }
 
+// ValidateShortDate validates a date in the format "02.01.2006"
+func (v StringValidityChecker) ValidateShortDate() bool {
+	dateFormat := "02.01.2006"
+	_, err := time.Parse(dateFormat, v.Item)
+	return err == nil
+}
+
 // ValidateDate validates a date in the format "02.01.2006T15:04:05"
 func (v StringValidityChecker) ValidateDate() bool {
 	dateFormat := "02.01.2006T15:04:05"
