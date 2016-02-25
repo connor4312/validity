@@ -22,30 +22,21 @@ func (translator RomanianTranslator) TranslateRule(method string, options string
 	message := "Validarea pentru regula [" + method + "] nu a reuşit!"
 
 	switch method {
-	case "Float":
+	// Float
+	case "float":
 		message = "Câmpul trebuie să fie un număr real"
-	case "Int":
-		message = "Câmpul trebuie să fie un număr întreg"
-	case "url", "email":
-		message = "Câmpul trebuie sa fie un " + strings.ToUpper(method) + " valid."
-	case "regex":
-		message = "Trebuie să se potrivească acestei expresii regulate: " + options
-	case "date":
-		message = "Trebuie să fie o dată calendaristică lungă. De exemplu: 02.01.2006T15:04:05"
-	case "short_date":
-		message = "Trebuie să fie o dată calendaristică scurtă. De exemplu: 02.01.2006"
-	case "cnp":
-		message = "Trebuie să fie un cod numeric personal (CNP) valid"
-	case "cif":
-		message = "Trebuie să fie un cod de identificare fiscală valid (CIF)"
-	case "iban":
-		message = "Trebuie să fie un cont bancar valid (IBAN)"
 	case "value":
 		betweenMessage := translator.getMessageBetween(options)
 		message = "Valoarea câmpului trebuie să fie între " + betweenMessage + " (inclusiv intervalele)"
 	case "value_strict":
 		betweenMessage := translator.getMessageBetween(options)
 		message = "Valoarea câmpului trebuie să fie între " + betweenMessage + " (intervalele nu sunt acceptate)"
+
+		// Int
+	case "int":
+		message = "Câmpul trebuie să fie un număr întreg"
+
+		// Shared
 	case "between":
 		betweenMessage := translator.getMessageBetween(options)
 		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (inclusiv intervale)"
@@ -64,18 +55,24 @@ func (translator RomanianTranslator) TranslateRule(method string, options string
 		message = "Lungimea maximă permisă este de " + options
 	case "len":
 		message = "Trebuie să aibă exact " + options + " cifre"
-	case "alpha":
-		message = "Acesta trebuie să fie în întregime caractere alfabetice"
-	case "alpha_dash":
-		message = "Aceasta poate avea caractere alfanumerice, precum și liniuțe de subliniere și cratime."
-	case "alpha_num":
-		message = "Acesta trebuie să aibă în întregime caractere alfanumerice"
 	case "digits":
 		message = "Trebuie să fie un număr şi să aibă un number de " + options + " de cifre"
-	case "required":
-		message = "Câmpul în curs de validare trebuie sa fie prezent. Sunt acceptate toate tipurile. Notă: opţiunile nu funcționează atunci când se încearcă să se valideze structs, deoarece nu este posibil să se știe dacă valorile nule sunt zero, deoarece acestea nu sunt stabilite, sau pentru că ar trebui să fie de fapt de zero"
-	case "full_name":
-		message = "Câmpul trebuie să conțină caractere alfanumerice, puncte sau spații"
+
+		// Special
+	case "url", "email":
+		message = "Câmpul trebuie sa fie un " + strings.ToUpper(method) + " valid."
+	case "regex":
+		message = "Trebuie să se potrivească acestei expresii regulate: " + options
+	case "date":
+		message = "Trebuie să fie o dată calendaristică lungă. De exemplu: 02.01.2006T15:04:05"
+	case "short_date":
+		message = "Trebuie să fie o dată calendaristică scurtă. De exemplu: 02.01.2006"
+	case "cnp":
+		message = "Trebuie să fie un cod numeric personal (CNP) valid"
+	case "cif":
+		message = "Trebuie să fie un cod de identificare fiscală valid (CIF)"
+	case "iban":
+		message = "Trebuie să fie un cont bancar valid (IBAN)"
 	}
 	return message
 }
