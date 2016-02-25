@@ -22,9 +22,6 @@ type Results struct {
 func (v *Results) TranslateTo(language string) map[string][]string {
 	var translator Translater
 	switch language {
-	case "english":
-		translator = NewEnglishTranslator()
-		break
 	case "romanian":
 		translator = NewRomanianTranslator()
 		break

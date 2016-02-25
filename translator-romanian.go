@@ -22,30 +22,42 @@ func (translator RomanianTranslator) TranslateRule(method string, options string
 	message := "Validarea pentru regula [" + method + "] nu a reuşit!"
 
 	switch method {
-	case "accepted":
-		message = "Acest câmp trebuie să fie 'yes', 'on', true, sau 1. Sunt permise valori numerice sau text."
-	case "url", "email", "ipv4", "ipv6", "ip":
+	case "Float":
+		message = "Câmpul trebuie să fie un număr real"
+	case "Int":
+		message = "Câmpul trebuie să fie un număr întreg"
+	case "url", "email":
 		message = "Câmpul trebuie sa fie un " + strings.ToUpper(method) + " valid."
 	case "regex":
 		message = "Trebuie să se potrivească acestei expresii regulate: " + options
 	case "date":
-		message = "Trebuie să fie o data calendaristică validă. De exemplu: 02.01.2006T15:04:05"
+		message = "Trebuie să fie o dată calendaristică lungă. De exemplu: 02.01.2006T15:04:05"
 	case "short_date":
-		message = "Trebuie să fie o data calendaristică validă. De exemplu: 02.01.2006"
+		message = "Trebuie să fie o dată calendaristică scurtă. De exemplu: 02.01.2006"
 	case "cnp":
 		message = "Trebuie să fie un cod numeric personal (CNP) valid"
+	case "cif":
+		message = "Trebuie să fie un cod de identificare fiscală valid (CIF)"
+	case "iban":
+		message = "Trebuie să fie un cont bancar valid (IBAN)"
+	case "value":
+		betweenMessage := translator.getMessageBetween(options)
+		message = "Valoarea câmpului trebuie să fie între " + betweenMessage + " (inclusiv intervalele)"
+	case "value_strict":
+		betweenMessage := translator.getMessageBetween(options)
+		message = "Valoarea câmpului trebuie să fie între " + betweenMessage + " (intervalele nu sunt acceptate)"
 	case "between":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (fară intervale)"
-	case "between_inclusive":
+		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (inclusiv intervale)"
+	case "between_strict":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (inclusiv intervalele)"
+		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (fară intervalele)"
 	case "digits_between":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Câmpul trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (fără intervale)"
-	case "digits_between_inclusive":
+		message = "Câmpul trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (inclusiv intervale)"
+	case "digits_between_strict":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Câmpul trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (inclusiv intervalele)"
+		message = "Câmpul trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (fără intervalele)"
 	case "min":
 		message = "Lungimea minimă permisă este de " + options
 	case "max":

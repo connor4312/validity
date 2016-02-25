@@ -6,7 +6,7 @@ import (
 
 func TestFloatValidateBetweenPass(t *testing.T) {
 	data := TestStruct{Baz: 5}
-	rules := Rules{"Baz": []string{"Float", "between:3,6"}}
+	rules := Rules{"Baz": []string{"Float", "value:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if !results.IsValid {
@@ -15,7 +15,7 @@ func TestFloatValidateBetweenPass(t *testing.T) {
 }
 func TestFloatValidateBetweenFailLower(t *testing.T) {
 	data := TestStruct{Baz: 1}
-	rules := Rules{"Baz": []string{"Float", "between:3,6"}}
+	rules := Rules{"Baz": []string{"Float", "value:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {
@@ -24,7 +24,7 @@ func TestFloatValidateBetweenFailLower(t *testing.T) {
 }
 func TestFloatValidateBetweenFailUpper(t *testing.T) {
 	data := TestStruct{Baz: 8}
-	rules := Rules{"Baz": []string{"Float", "between:3,6"}}
+	rules := Rules{"Baz": []string{"Float", "value:3,6"}}
 
 	results := ValidateStruct(data, rules)
 	if results.IsValid {

@@ -55,13 +55,13 @@ func (v FloatValidityChecker) GetErrors() []string {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
-// ValidateBetweenStrict checks if the number: min < len(number) > max
-func (v FloatValidityChecker) ValidateBetweenStrict(min string, max string) bool {
+// ValidateValueStrict checks if the number: min < len(number) > max
+func (v FloatValidityChecker) ValidateValueStrict(min string, max string) bool {
 	return v.Item > v.toFloat(min) && v.Item < v.toFloat(max)
 }
 
-// ValidateBetween checks if the number: min <= len(number) => max
-func (v FloatValidityChecker) ValidateBetween(min string, max string) bool {
+// ValidateValue checks if the number: min <= len(number) => max
+func (v FloatValidityChecker) ValidateValue(min string, max string) bool {
 	return v.Item >= v.toFloat(min) && v.Item <= v.toFloat(max)
 }
 
