@@ -36,27 +36,30 @@ func (translator RomanianTranslator) TranslateRule(method string, options string
 	case "int":
 		message = "Câmpul trebuie să fie un număr întreg"
 
-		// Shared
+		// String
 	case "between":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (inclusiv intervale)"
+		message = "Trebuie să conțină între " + betweenMessage + " de caractere (inclusiv intervale)"
 	case "between_strict":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Lungimea trebuie să fie între " + betweenMessage + " de caractere (fară intervalele)"
+		message = "Trebuie să conțină între " + betweenMessage + " de caractere (fară intervalele)"
+
+		// Shared
+
+	case "digits":
+		message = "Trebuie să aibă " + options + " cifre"
 	case "digits_between":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Câmpul trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (inclusiv intervale)"
+		message = "Trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (inclusiv intervale)"
 	case "digits_between_strict":
 		betweenMessage := translator.getMessageBetween(options)
-		message = "Câmpul trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (fără intervalele)"
+		message = "Trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (fără intervalele)"
+	case "len":
+		message = "Trebuie să aibă exact " + options + " caractere"
 	case "min":
 		message = "Lungimea minimă permisă este de " + options
 	case "max":
 		message = "Lungimea maximă permisă este de " + options
-	case "len":
-		message = "Trebuie să aibă exact " + options + " cifre"
-	case "digits":
-		message = "Trebuie să fie un număr şi să aibă un number de " + options + " de cifre"
 
 		// Special
 	case "url", "email":
