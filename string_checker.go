@@ -349,22 +349,18 @@ func (v StringValidityChecker) ValidateDate() bool {
 
 // ValidateEmail checks if the value is an email
 func (v StringValidityChecker) ValidateEmail() bool {
-	return v.checkRegexp("^.+\\@.+\\..+$")
+	return (len([]rune(v.Item)) <= 40) && v.checkRegexp("^.+\\@.+\\..+$")
 }
 
-// ValidateLen checks if the real len of item is that number
-func (v StringValidityChecker) ValidateLen(length string) bool {
-	return len([]rune(v.Item)) != v.toInt(length)
+// ValidateRegexp validates a regex
+func (v StringValidityChecker) ValidateRegexp(r string) bool {
+	return v.checkRegexp(r)
 }
 
-// ValidateMax checks if the number: len(number) <= max
-func (v StringValidityChecker) ValidateMax(length string) bool {
-	return len([]rune(v.Item)) <= v.toInt(length)
-}
-
-// ValidateMin checks if the number: min <= len(number)
-func (v StringValidityChecker) ValidateMin(length string) bool {
-	return len([]rune(v.Item)) >= v.toInt(length)
+// ValidateBetween checks if the number: min <= len(number) => max
+func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
+	length := len([]rune(v.Item))
+	return length >= v.toInt(min) && length <= v.toInt(max)
 }
 
 // ValidateBetweenStrict checks if the number: min < len(number) > max
@@ -374,13 +370,17 @@ func (v StringValidityChecker) ValidateBetweenStrict(min string, max string) boo
 	return length > v.toInt(min) && length < v.toInt(max)
 }
 
-// ValidateBetween checks if the number: min <= len(number) => max
-func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
-	length := len([]rune(v.Item))
-	return length >= v.toInt(min) && length <= v.toInt(max)
+// ValidateMaxLen checks if the number: len(number) <= max
+func (v StringValidityChecker) ValidateMaxLen(length string) bool {
+	return len([]rune(v.Item)) <= v.toInt(length)
 }
 
-// ValidateRegexp validates a regex
-func (v StringValidityChecker) ValidateRegexp(r string) bool {
-	return v.checkRegexp(r)
+// ValidateMinLen checks if the number: min <= len(number)
+func (v StringValidityChecker) ValidateMinLen(length string) bool {
+	return len([]rune(v.Item)) >= v.toInt(length)
+}
+
+// ValidateLen checks if the real len of item is that number
+func (v StringValidityChecker) ValidateLen(length string) bool {
+	return len([]rune(v.Item)) == v.toInt(length)
 }
