@@ -1,7 +1,6 @@
 package validity
 
 import (
-	"math"
 	"strconv"
 )
 
@@ -21,9 +20,15 @@ func (v IntValidityChecker) toInt(s string) int64 {
 
 // Gets the number of digits from the item.
 func (v IntValidityChecker) getDigits() int64 {
-	log := math.Log10(float64(v.Item))
 
-	return int64(math.Ceil(log))
+	number := v.Item
+	digits := 0
+
+	for ; number > 0; digits++ {
+		number = number / 10
+	}
+
+	return int64(digits)
 }
 
 // GetKey returns the key
@@ -50,13 +55,13 @@ func (v IntValidityChecker) GetErrors() []string {
 // For explanation involving validation rules, checkout the first huge comment in validity.go.
 //----------------------------------------------------------------------------------------------------------------------
 
-// ValidateBetweenStrict checks if the number: min < len(number) > max
-func (v IntValidityChecker) ValidateBetweenStrict(min string, max string) bool {
+// ValidateValueStrict checks if the number: min < len(number) > max
+func (v IntValidityChecker) ValidateValueStrict(min string, max string) bool {
 	return v.Item > v.toInt(min) && v.Item < v.toInt(max)
 }
 
-// ValidateBetween checks if the number: min <= len(number) => max
-func (v IntValidityChecker) ValidateBetween(min string, max string) bool {
+// ValidateValue checks if the number: min <= len(number) => max
+func (v IntValidityChecker) ValidateValue(min string, max string) bool {
 	return v.Item >= v.toInt(min) && v.Item <= v.toInt(max)
 }
 

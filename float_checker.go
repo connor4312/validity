@@ -72,10 +72,10 @@ func (v FloatValidityChecker) ValidateDigits(num string) bool {
 
 // ValidateMax checks if the number: len(number) <= max
 func (v FloatValidityChecker) ValidateMax(max string) bool {
-	return v.Item < v.toFloat(max)
+	return v.Item <= v.toFloat(max)
 }
 
 // ValidateMin checks if the number: min <= len(number)
 func (v FloatValidityChecker) ValidateMin(min string) bool {
-	return v.Item > v.toFloat(min)
+	return v.Item >= v.toFloat(min)
 }

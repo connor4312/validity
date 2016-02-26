@@ -2,117 +2,278 @@ package validity
 
 import (
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestIntValidateBetweenPass(t *testing.T) {
-	data := TestStruct{Bar: 5}
-	rules := Rules{"Bar": []string{"Int", "between:3,6"}}
+func TestInt(t *testing.T) {
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Int between validator does not pass.")
-	}
-}
-func TestIntValidateBetweenFailLower(t *testing.T) {
-	data := TestStruct{Bar: 1}
-	rules := Rules{"Bar": []string{"Int", "between:3,6"}}
+	// value
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int between validator does not fail on lower.")
-	}
-}
-func TestIntValidateBetweenFailUpper(t *testing.T) {
-	data := TestStruct{Bar: 8}
-	rules := Rules{"Bar": []string{"Int", "between:3,6"}}
+	Convey("Given the validation rule \"value:0,100\"", t, func() {
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int between validator does not fail on upper.")
-	}
-}
+		rule := Rules{"Bar": []string{"Int", "value:0,100"}}
+		Convey("Given the value -1", func() {
 
-func TestIntValidateDigitsPass(t *testing.T) {
-	data := TestStruct{Bar: 500}
-	rules := Rules{"Bar": []string{"Int", "digits:3"}}
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: -1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Int digits validator does not pass.")
-	}
-}
-func TestIntValidateBetweenFail(t *testing.T) {
-	data := TestStruct{Bar: 500}
-	rules := Rules{"Bar": []string{"Int", "digits:4"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int digits validator does not fail.")
-	}
-}
+		Convey("Given the value 0", func() {
 
-func TestIntValidateDigitsBetweenPass(t *testing.T) {
-	data := TestStruct{Bar: 500}
-	rules := Rules{"Bar": []string{"Int", "digits_between:2,4"}}
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 0}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Int between validator does not pass.")
-	}
-}
-func TestIntValidateDigitsBetweenFailLower(t *testing.T) {
-	data := TestStruct{Bar: 5}
-	rules := Rules{"Bar": []string{"Int", "between:2,4"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int digits between validator does not fail on lower.")
-	}
-}
-func TestIntValidateDigitsBetweenFailUpper(t *testing.T) {
-	data := TestStruct{Bar: 5000000}
-	rules := Rules{"Bar": []string{"Int", "between:2,4"}}
+		Convey("Given the value 1", func() {
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int digits between validator does not fail on upper.")
-	}
-}
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
-func TestIntValidateMaxPass(t *testing.T) {
-	data := TestStruct{Bar: 4}
-	rules := Rules{"Bar": []string{"Int", "max:5"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Int max validator does not pass.")
-	}
-}
-func TestIntValidateMaxFail(t *testing.T) {
-	data := TestStruct{Bar: 8}
-	rules := Rules{"Bar": []string{"Int", "max:5"}}
+		Convey("Given the value 100", func() {
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int max validator does not fail.")
-	}
-}
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 100}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
-func TestIntValidateMinPass(t *testing.T) {
-	data := TestStruct{Bar: 8}
-	rules := Rules{"Bar": []string{"Int", "min:5"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Int min validator does not pass.")
-	}
-}
-func TestIntValidateMinFail(t *testing.T) {
-	data := TestStruct{Bar: 4}
-	rules := Rules{"Bar": []string{"Int", "min:5"}}
+		Convey("Given the value 101", func() {
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Int min validator does not fail.")
-	}
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 101}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// value_strict
+
+	Convey("Given the validation rule \"value_strict:0,100\"", t, func() {
+
+		rule := Rules{"Bar": []string{"Int", "value_strict:0,100"}}
+		Convey("Given the value -1", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: -1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 0", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 0}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 1", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 100", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 100}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 101", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 101}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// digits
+
+	Convey("Given the validation rule \"digits:3\"", t, func() {
+
+		rule := Rules{"Bar": []string{"Int", "digits:3"}}
+
+		Convey("Given the value 10", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 10}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 100", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 100}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 1000", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 1000}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// digits_between
+
+	Convey("Given the validation rule \"digits_between:2,5\"", t, func() {
+
+		rule := Rules{"Bar": []string{"Int", "digits_between:2,5"}}
+
+		Convey("Given the value 1", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 12", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 12}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 123", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 123}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 12345", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 12345}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 123456", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 123456}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// digits_between_strict
+
+	Convey("Given the validation rule \"digits_between_strict:2,5\"", t, func() {
+
+		rule := Rules{"Bar": []string{"Int", "digits_between_strict:2,5"}}
+
+		Convey("Given the value 1", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 12", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 12}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 123", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Bar: 123}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 12345", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 12345}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 123456", func() {
+
+			Convey("The result should not be valid", func() {
+				data := TestStruct{Bar: 123456}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
 }

@@ -8,6 +8,8 @@ import (
 
 func TestFloat(t *testing.T) {
 
+	// value
+
 	Convey("Given the rule \"value:0,100\"", t, func() {
 
 		rules := Rules{"Baz": []string{"Float", "value:0,100"}}
@@ -64,6 +66,8 @@ func TestFloat(t *testing.T) {
 
 	})
 
+	// value_strict
+
 	Convey("Given the rule \"value_strict:500.2,2000.8\"", t, func() {
 		rules := Rules{"Baz": []string{"Float", "value_strict:500.2,2000.8"}}
 
@@ -119,6 +123,8 @@ func TestFloat(t *testing.T) {
 
 	})
 
+	// digits
+
 	Convey("Given a validation which has the rule \"digits:4\"", t, func() {
 
 		rule := Rules{"Baz": []string{"Float", "digits:4"}}
@@ -155,6 +161,8 @@ func TestFloat(t *testing.T) {
 
 	})
 
+	// max
+
 	Convey("Given a validation which has the rule \"max:100\"", t, func() {
 
 		rule := Rules{"Baz": []string{"Float", "max:100"}}
@@ -174,7 +182,7 @@ func TestFloat(t *testing.T) {
 			Convey("The result should not be valid", func() {
 				data := TestStruct{Baz: 100}
 				result := ValidateStruct(data, rule)
-				So(result.IsValid, ShouldBeFalse)
+				So(result.IsValid, ShouldBeTrue)
 			})
 
 		})
@@ -185,6 +193,44 @@ func TestFloat(t *testing.T) {
 				data := TestStruct{Baz: 101}
 				result := ValidateStruct(data, rule)
 				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// min
+
+	Convey("Given a validation which has the rule \"min:0\"", t, func() {
+
+		rule := Rules{"Baz": []string{"Float", "min:0"}}
+
+		Convey("Given the value -1", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Baz: -1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 0", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Baz: 0}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 1", func() {
+
+			Convey("The result should be valid", func() {
+				data := TestStruct{Baz: 1}
+				result := ValidateStruct(data, rule)
+				So(result.IsValid, ShouldBeTrue)
 			})
 
 		})
