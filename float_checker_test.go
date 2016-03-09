@@ -12,7 +12,11 @@ func TestFloat(t *testing.T) {
 
 	Convey("Given the rule \"value:0,100\"", t, func() {
 
-		rules := Rules{"Baz": []string{"Float", "value:0,100"}}
+		rules := Rules{"Baz": Field{
+			Name:  "Baz",
+			Type:  "Float",
+			Rules: []string{"value:0,100"},
+		}}
 
 		Convey("Given the value 50 (between intervals)", func() {
 
@@ -69,7 +73,12 @@ func TestFloat(t *testing.T) {
 	// value_strict
 
 	Convey("Given the rule \"value_strict:500.2,2000.8\"", t, func() {
-		rules := Rules{"Baz": []string{"Float", "value_strict:500.2,2000.8"}}
+		rules := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"value_strict:500.2,2000.8"},
+		},
+		}
 
 		Convey("Given the value 1000.78 (between intervals)", func() {
 
@@ -127,7 +136,12 @@ func TestFloat(t *testing.T) {
 
 	Convey("Given a validation which has the rule \"digits:4\"", t, func() {
 
-		rule := Rules{"Baz": []string{"Float", "digits:4"}}
+		rule := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"digits:4"},
+		},
+		}
 
 		Convey("Given the value 5000", func() {
 
@@ -165,7 +179,12 @@ func TestFloat(t *testing.T) {
 
 	Convey("Given a validation which has the rule \"max:100\"", t, func() {
 
-		rule := Rules{"Baz": []string{"Float", "max:100"}}
+		rule := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"max:100"},
+		},
+		}
 
 		Convey("Given the value 50", func() {
 
@@ -203,7 +222,12 @@ func TestFloat(t *testing.T) {
 
 	Convey("Given a validation which has the rule \"min:0\"", t, func() {
 
-		rule := Rules{"Baz": []string{"Float", "min:0"}}
+		rule := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"min:0"},
+		},
+		}
 
 		Convey("Given the value -1", func() {
 

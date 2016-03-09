@@ -48,14 +48,14 @@ func (c *Queue) RunParsers() {
 		item, exists := c.Data[key]
 
 		if !exists {
-			if inSlice("required", validator) {
+			if inSlice("required", validator.Rules) {
 				c.AddError(key, "required")
 			}
 			continue
 		}
 
 		// This calls a function like "ParseInt" present on the Parsers map.
-		callIn(Parsers{}, "Parse"+validator[0], c, key, item, validator)
+		callIn(Parsers{}, "Parse"+validator.Name, c, key, item, validator)
 	}
 }
 

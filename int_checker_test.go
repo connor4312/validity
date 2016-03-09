@@ -12,7 +12,12 @@ func TestInt(t *testing.T) {
 
 	Convey("Given the validation rule \"value:0,100\"", t, func() {
 
-		rule := Rules{"Bar": []string{"Int", "value:0,100"}}
+		rule := Rules{"Bar": Field{
+			Name:  "Baz",
+			Type:  "Int",
+			Rules: []string{"value:0,100"},
+		}}
+
 		Convey("Given the value -1", func() {
 
 			Convey("The result should not be valid", func() {
@@ -69,7 +74,12 @@ func TestInt(t *testing.T) {
 
 	Convey("Given the validation rule \"value_strict:0,100\"", t, func() {
 
-		rule := Rules{"Bar": []string{"Int", "value_strict:0,100"}}
+		rule := Rules{"Bar": Field{
+			Name:  "Baz",
+			Type:  "Int",
+			Rules: []string{"value_strict:0,100"},
+		},
+		}
 		Convey("Given the value -1", func() {
 
 			Convey("The result should not be valid", func() {
@@ -126,7 +136,12 @@ func TestInt(t *testing.T) {
 
 	Convey("Given the validation rule \"digits:3\"", t, func() {
 
-		rule := Rules{"Bar": []string{"Int", "digits:3"}}
+		rule := Rules{"Bar": Field{
+			Type:  "Int",
+			Name:  "Foo",
+			Rules: []string{"digits:3"},
+		},
+		}
 
 		Convey("Given the value 10", func() {
 
@@ -164,7 +179,12 @@ func TestInt(t *testing.T) {
 
 	Convey("Given the validation rule \"digits_between:2,5\"", t, func() {
 
-		rule := Rules{"Bar": []string{"Int", "digits_between:2,5"}}
+		rule := Rules{"Bar": Field{
+			Type:  "Int",
+			Name:  "Foo",
+			Rules: []string{"digits_between:2,5"},
+		},
+		}
 
 		Convey("Given the value 1", func() {
 
@@ -222,7 +242,12 @@ func TestInt(t *testing.T) {
 
 	Convey("Given the validation rule \"digits_between_strict:2,5\"", t, func() {
 
-		rule := Rules{"Bar": []string{"Int", "digits_between_strict:2,5"}}
+		rule := Rules{"Bar": Field{
+			Type:  "Int",
+			Name:  "Foo",
+			Rules: []string{"digits_between_strict:2,5"},
+		},
+		}
 
 		Convey("Given the value 1", func() {
 

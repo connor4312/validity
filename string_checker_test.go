@@ -13,14 +13,18 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"IBAN\"", t, func() {
 
-		rule := []string{"String", "iban"}
+		rule := []string{"iban"}
 
 		isValidIban := func(iban string) bool {
 			data := map[string]interface{}{
 				"IBAN": iban,
 			}
-			rules := map[string][]string{
-				"IBAN": rule,
+			rules := map[string]Field{
+				"IBAN": Field{
+					Type:  "String",
+					Name:  "IBAN " + iban,
+					Rules: rule,
+				},
 			}
 			return ValidateMap(data, rules).IsValid
 		}
@@ -100,14 +104,18 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"CIF\"", t, func() {
 
-		rule := []string{"String", "cif"}
+		rule := []string{"cif"}
 
 		isValidCif := func(cif string) bool {
 			data := map[string]interface{}{
-				"NID": cif,
+				"cif": cif,
 			}
-			rules := map[string][]string{
-				"NID": rule,
+			rules := map[string]Field{
+				"cif": Field{
+					Type:  "String",
+					Name:  "CIF " + cif,
+					Rules: rule,
+				},
 			}
 			return ValidateMap(data, rules).IsValid
 		}
@@ -230,8 +238,12 @@ func TestString(t *testing.T) {
 			data := map[string]interface{}{
 				"NID": cnp,
 			}
-			rules := map[string][]string{
-				"NID": rule,
+			rules := map[string]Field{
+				"NID": Field{
+					Type:  "String",
+					Name:  "NID " + cnp,
+					Rules: rule,
+				},
 			}
 			results := ValidateMap(data, rules)
 			return results.IsValid
@@ -457,7 +469,12 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"short_date\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "short_date"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"short_date"},
+		},
+		}
 
 		Convey("Given the value \"\"", func() {
 
@@ -495,7 +512,11 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"date\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "date"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"date"},
+		}}
 
 		Convey("Given the value \"\"", func() {
 
@@ -533,7 +554,11 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"email\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "email"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"email"},
+		}}
 
 		Convey("Given the value \"\"", func() {
 
@@ -631,7 +656,11 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"regex:^Fo.*ar$\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "Regexp:^Fo.*ar$"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"Regexp:^Fo.*ar$"},
+		}}
 
 		Convey("Given the value \"FooBar\"", func() {
 
@@ -659,7 +688,12 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"between:1,5\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "between:1,5"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"between:1,5"},
+		},
+		}
 
 		Convey("Given the value \"\"", func() {
 
@@ -717,7 +751,12 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"between_strict:1,5\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "between_strict:1,5"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"between_strict:1,5"},
+		},
+		}
 
 		Convey("Given the value \"\"", func() {
 
@@ -775,7 +814,12 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"max_len:2\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "max_len:2"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"max_len:2"},
+		},
+		}
 
 		Convey("Given the value \"a\"", func() {
 
@@ -813,7 +857,12 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"min_len:2\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "min_len:2"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"min_len:2"},
+		},
+		}
 
 		Convey("Given the value \"aaa\"", func() {
 
@@ -853,7 +902,12 @@ func TestString(t *testing.T) {
 
 	Convey("Given the validation rule \"len:2\"", t, func() {
 
-		rule := Rules{"Foo": []string{"String", "len:2"}}
+		rule := Rules{"Foo": Field{
+			Type:  "String",
+			Name:  "Foo",
+			Rules: []string{"len:2"},
+		},
+		}
 
 		Convey("Given the value \"a\"", func() {
 
