@@ -115,13 +115,13 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 			if !result.IsValid {
 				results.IsValid = false
-			}
 
-			errorObject := Error{
-				Keys:  result.Errors,
-				Field: field,
+				errorObject := Error{
+					Keys:  result.Errors,
+					Field: field,
+				}
+				results.Errors = append(results.Errors, &errorObject)
 			}
-			results.Errors = append(results.Errors, &errorObject)
 		}
 	}
 	return &results
