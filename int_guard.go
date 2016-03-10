@@ -20,7 +20,6 @@ func (guard IntGuard) Check() Result {
 		return Result{
 			Errors:  []string{"INT"},
 			IsValid: false,
-			Data:    guard.Value,
 		}
 	}
 	guard.Value = intValue
@@ -41,7 +40,6 @@ func (guard IntGuard) checkRules() Result {
 		if !isValid {
 			result.Errors = append(result.Errors, "INT#"+rule)
 			result.IsValid = false
-			result.Data = guard.Value
 		}
 	}
 	return result

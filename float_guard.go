@@ -21,7 +21,6 @@ func (guard FloatGuard) Check() Result {
 		return Result{
 			Errors:  []string{"FLOAT"},
 			IsValid: false,
-			Data:    guard.Value,
 		}
 	}
 	guard.Value = float32(float64Value)
@@ -42,7 +41,6 @@ func (guard FloatGuard) checkRules() Result {
 		if !isValid {
 			result.Errors = append(result.Errors, "FLOAT#"+rule)
 			result.IsValid = false
-			result.Data = guard.Value
 		}
 	}
 	return result

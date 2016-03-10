@@ -28,7 +28,6 @@ func (guard SpecialGuard) Check() Result {
 		if !isValid {
 			result.Errors = append(result.Errors, "SPECIAL#"+rule)
 			result.IsValid = false
-			result.Data = guard.Value
 		}
 	}
 	return result

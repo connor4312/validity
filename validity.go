@@ -17,7 +17,7 @@ type Field struct {
 type Results struct {
 	IsValid bool
 	Errors  map[string][]string
-	Data    map[string]interface{}
+	Data    map[string]Field
 }
 
 // TranslateTo translates the errors into a language and returns a map[string]string
@@ -43,7 +43,6 @@ func ValidateMap(data map[string]interface{}, rules Rules) *Results {
 type Result struct {
 	IsValid bool
 	Errors  []string
-	Data    interface{}
 }
 
 // Guard ensures that the value is ok
@@ -57,7 +56,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 	results := Results{
 		IsValid: true,
 		Errors:  map[string][]string{},
-		Data:    map[string]interface{}{},
+		Data:    map[string]Field{},
 	}
 
 	for index, field := range rulesMap {
@@ -103,7 +102,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 			results.IsValid = false
 		}
 
-		results.Data[key] = result.Data
+		results.Data[key] = field
 		results.Errors[key] = result.Errors
 	}
 	return &results

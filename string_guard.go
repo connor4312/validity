@@ -27,7 +27,6 @@ func (guard StringGuard) Check() Result {
 		if !isValid {
 			result.Errors = append(result.Errors, "STRING#"+rule)
 			result.IsValid = false
-			result.Data = guard.Value
 		}
 	}
 	return result

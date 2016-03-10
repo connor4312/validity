@@ -73,7 +73,7 @@ func (translator Translator) Translate(results *Results) map[string][]string {
 	for element, fieldErrors := range results.Errors {
 		for _, fullMethod := range fieldErrors {
 			parts := strings.SplitN(fullMethod, ":", 2)
-			method := strings.ToLower(parts[0])
+			method := parts[0]
 			options := ""
 			if len(parts) == 2 {
 				options = parts[1]
