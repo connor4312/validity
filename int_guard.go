@@ -29,7 +29,8 @@ func (guard IntGuard) Check() Result {
 
 func (guard IntGuard) checkRules() Result {
 	result := Result{
-		Errors: []string{},
+		Errors:  []string{},
+		IsValid: true,
 	}
 	for _, rule := range guard.Rules {
 		isValid, err := guard.checkRule(rule)

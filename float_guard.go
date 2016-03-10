@@ -34,7 +34,8 @@ func (guard FloatGuard) Check() Result {
 
 func (guard FloatGuard) checkRules() Result {
 	result := Result{
-		Errors: []string{},
+		Errors:  []string{},
+		IsValid: true,
 	}
 	for _, rule := range guard.Rules {
 		isValid, err := guard.checkRule(rule)

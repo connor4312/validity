@@ -11,7 +11,7 @@ func TestFloat(t *testing.T) {
 
 	// value
 
-	Convey("Given the rule \"value:0100\"", t, func() {
+	Convey("Given the rule \"value:0,100\"", t, func() {
 
 		rules := Rules{"Baz": Field{
 			Name:  "Baz",

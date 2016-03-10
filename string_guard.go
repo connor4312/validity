@@ -16,7 +16,8 @@ type StringGuard struct {
 // Check ensures that the value is ok
 func (guard StringGuard) Check() Result {
 	result := Result{
-		Errors: []string{},
+		Errors:  []string{},
+		IsValid: true,
 	}
 	for _, rule := range guard.Rules {
 		isValid, err := guard.checkRule(rule)
