@@ -9,7 +9,7 @@ import (
 // is the object which transoforms the error codes to human messages
 // It may transform just a particular rule or the entire map
 type Translater interface {
-	Translate(results *Results) map[string][]string
+	Translate(results *Results)
 }
 
 type floatT struct {
@@ -69,10 +69,10 @@ func (translator Translator) getMessageBetween(old string) string {
 }
 
 // Translate translates the messages
-func (translator Translator) Translate(results *Results) map[string][]string {
-	humanMessages := map[string][]string{}
-	for element, fieldErrors := range results.Errors {
-		for _, fullMethod := range fieldErrors {
+func (translator Translator) Translate(results *Results) {
+	for _, fieldErrors := range results.Errors {
+		fieldErrors.Messages = []string{}
+		for _, fullMethod := range fieldErrors.Keys {
 			parts := strings.SplitN(fullMethod, ":", 2)
 			method := parts[0]
 			options := ""
@@ -80,14 +80,9 @@ func (translator Translator) Translate(results *Results) map[string][]string {
 				options = parts[1]
 			}
 			humanMessage := translator.itMustBe + " " + translator.translateRule(method, options)
-			messages, exists := humanMessages[element]
-			if !exists {
-				humanMessages[element] = []string{}
-			}
-			humanMessages[element] = append(messages, humanMessage)
+			fieldErrors.Messages = append(fieldErrors.Messages, humanMessage)
 		}
 	}
-	return humanMessages
 }
 
 // translateRule translates a method into a english human message

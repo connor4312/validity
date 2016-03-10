@@ -14,15 +14,21 @@ type Field struct {
 	Optional bool
 }
 
+// Error represents an error message
+type Error struct {
+	Messages []string
+	Keys     []string
+	Field    Field
+}
+
 // Results is returned from validation functions.
 type Results struct {
 	IsValid bool
-	Errors  map[string][]string
-	Data    map[string]Field
+	Errors  []Error
 }
 
 // TranslateTo translates the errors into a language and returns a map[string]string
-func (v *Results) TranslateTo(language string) map[string][]string {
+func (v *Results) TranslateTo(language string) {
 	var translator Translater
 	switch language {
 	case "romanian":
@@ -31,7 +37,7 @@ func (v *Results) TranslateTo(language string) map[string][]string {
 	default:
 		panic("This language " + language + " is not supported.")
 	}
-	return translator.Translate(v)
+	translator.Translate(v)
 }
 
 // ValidateMap validates a map against a set of rules. "Data" is obviously a map of string keys to mixed type values, while rules
@@ -56,8 +62,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 	results := Results{
 		IsValid: true,
-		Errors:  map[string][]string{},
-		Data:    map[string]Field{},
+		Errors:  []Error{},
 	}
 
 	for index, field := range rulesMap {
@@ -68,12 +73,14 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 		)
 
 		rawValue, isPresent := mapData[index]
-		key := index
 
 		if !isPresent {
 			if !field.Optional {
-				results.Data[key] = field
-				results.Errors[key] = []string{"REQUIRED"}
+				errorObject := Error{
+					Keys:  []string{"REQUIRED"},
+					Field: field,
+				}
+				results.Errors = append(results.Errors, errorObject)
 			}
 		} else {
 			value := fmt.Sprintf("%v", rawValue)
@@ -110,8 +117,11 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 				results.IsValid = false
 			}
 
-			results.Data[key] = field
-			results.Errors[key] = result.Errors
+			errorObject := Error{
+				Keys:  result.Errors,
+				Field: field,
+			}
+			results.Errors = append(results.Errors, errorObject)
 		}
 	}
 	return &results
