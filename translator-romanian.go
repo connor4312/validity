@@ -19,65 +19,107 @@ func (translator RomanianTranslator) Translate(results *Results) map[string][]st
 // TranslateRule translates a method into a english human message
 func (translator RomanianTranslator) TranslateRule(method string, options string) string {
 
-	message := "Validarea pentru regula [" + method + "] nu a reuşit!"
+	generalMessage := "There is no translation rule for [" + method + ":" + options + "]"
 
-	switch method {
-	// Float
-	case "float":
-		message = "Câmpul trebuie să fie un număr real"
-	case "value":
-		betweenMessage := translator.getMessageBetween(options)
-		message = "Valoarea câmpului trebuie să fie între " + betweenMessage + " (inclusiv intervalele)"
-	case "value_strict":
-		betweenMessage := translator.getMessageBetween(options)
-		message = "Valoarea câmpului trebuie să fie între " + betweenMessage + " (intervalele nu sunt acceptate)"
-
-		// Int
-	case "int":
-		message = "Câmpul trebuie să fie un număr întreg"
-
-		// String
-	case "between":
-		betweenMessage := translator.getMessageBetween(options)
-		message = "Trebuie să conțină între " + betweenMessage + " de caractere (inclusiv intervale)"
-	case "between_strict":
-		betweenMessage := translator.getMessageBetween(options)
-		message = "Trebuie să conțină între " + betweenMessage + " de caractere (fară intervalele)"
-
-		// Shared
-
-	case "digits":
-		message = "Trebuie să aibă " + options + " cifre"
-	case "digits_between":
-		betweenMessage := translator.getMessageBetween(options)
-		message = "Trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (inclusiv intervale)"
-	case "digits_between_strict":
-		betweenMessage := translator.getMessageBetween(options)
-		message = "Trebuie să fie de tip numeric şi trebuie să fie între " + betweenMessage + " cifre (fără intervalele)"
-	case "len":
-		message = "Trebuie să aibă exact " + options + " caractere"
-	case "min":
-		message = "Lungimea minimă permisă este de " + options
-	case "max":
-		message = "Lungimea maximă permisă este de " + options
-
-		// Special
-	case "url", "email":
-		message = "Câmpul trebuie sa fie un " + strings.ToUpper(method) + " valid."
-	case "regex":
-		message = "Trebuie să se potrivească acestei expresii regulate: " + options
-	case "date":
-		message = "Trebuie să fie o dată calendaristică lungă. De exemplu: 02.01.2006T15:04:05"
-	case "short_date":
-		message = "Trebuie să fie o dată calendaristică scurtă. De exemplu: 02.01.2006"
-	case "cnp":
-		message = "Trebuie să fie un cod numeric personal (CNP) valid"
-	case "cif":
-		message = "Trebuie să fie un cod de identificare fiscală valid (CIF)"
-	case "iban":
-		message = "Trebuie să fie un cont bancar valid (IBAN)"
+	getFloatMessage := func(rule string) string {
+		switch rule {
+		case "value":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să fie un număr real între " + betweenMessage + " (inclusiv intervalele)"
+		case "value_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să fie un număr real între " + betweenMessage + " (intervalele nu sunt acceptate)"
+		case "min":
+			return "Trebuie să fie un număr real mai mare sau egal cu " + options
+		case "max":
+			return "Trebuie să fie un număr real mai mic sau egal cu " + options
+		case "digits":
+			return "Trebuie să fie un număr real și să aibă exact " + options + " cifre"
+		}
+		return generalMessage
 	}
-	return message
+	getIntMessage := func(rule string) string {
+		switch rule {
+		case "value":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să fie un număr întreg între " + betweenMessage + " (inclusiv intervalele)"
+		case "value_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să fie un număr întreg între " + betweenMessage + " (intervalele nu sunt acceptate)"
+		case "digits_between":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să fie un număr întreg care să aibă între " + betweenMessage + " cifre (inclusiv intervalele)"
+		case "digits_between_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să fie un număr întreg care să aibă între " + betweenMessage + " cifre (intervalele nu sunt acceptate)"
+		case "min":
+			return "Trebuie să fie un număr întreg mai mare sau egal cu " + options
+		case "max":
+			return "Trebuie să fie un număr întreg mai mic sau egal cu " + options
+		case "digits":
+			return "Trebuie să fie un număr întreg și să aibă exact " + options + " cifre"
+		}
+		return generalMessage
+	}
+	getStringMessage := func(rule string) string {
+		switch rule {
+		case "regex":
+			return "Trebuie să se potrivească acestei expresii regulate: " + options
+		case "between":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să conțină între " + betweenMessage + " caractere (inclusiv intervalele)"
+		case "between_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să conțină între " + betweenMessage + " caractere (intervalele nu sunt acceptate)"
+		case "len_min":
+			return "Trebuie să conțină cel puțin " + options + " caractere "
+		case "len_max":
+			return "Trebuie să conțină cel puțin " + options + " caractere "
+		case "len":
+			return "Trebuie să conțină exact " + options + " caractere"
+		}
+		return generalMessage
+	}
+	getSpecialMessage := func(rule string) string {
+		switch rule {
+		case "email":
+			return "Trebuie să fie o adresă de e-mail validă"
+		case "longDate":
+			return "Trebuie să fie o dată calendaristică lungă. De exemplu: 02.01.2006T15:04:05"
+		case "shortDate":
+			return "Trebuie să fie o dată calendaristică scurtă. De exemplu: 02.01.2006"
+		case "cnp":
+			return "Trebuie să fie un cod numeric personal (CNP) valid"
+		case "cif":
+			return "Trebuie să fie un cod de identificare fiscală valid (CIF)"
+		case "iban":
+			return "Trebuie să fie un cont bancar valid (IBAN)"
+		}
+		return generalMessage
+	}
+
+	parts := strings.SplitN(method, "#", 2)
+
+	if len(parts) == 1 {
+		switch method {
+		case "FLOAT":
+			return "Trebuie să fie un număr real (ex. 1,45)"
+		case "INT":
+			return "Trebuie să fie un număr întreg (ex. 563)"
+		}
+	}
+	rule := parts[1]
+	switch parts[0] {
+	case "FLOAT":
+		return getFloatMessage(rule)
+	case "INT":
+		return getIntMessage(rule)
+	case "STRING":
+		return getStringMessage(rule)
+	case "SPECIAL":
+		return getSpecialMessage(rule)
+	}
+	return generalMessage
 }
 
 // NewRomanianTranslator creates a new romanian translator

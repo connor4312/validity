@@ -24,7 +24,7 @@ func (guard StringGuard) Check() Result {
 			panic("The guardian STRING does not have the rule [" + rule + "]")
 		}
 		if !isValid {
-			result.Errors = append(result.Errors, "STRING_"+rule)
+			result.Errors = append(result.Errors, "STRING#"+rule)
 			result.IsValid = false
 			result.Data = guard.Value
 		}

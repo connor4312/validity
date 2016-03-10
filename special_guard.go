@@ -25,7 +25,7 @@ func (guard SpecialGuard) Check() Result {
 			panic("The guardian SPECIAL does not have the rule [" + rule + "]")
 		}
 		if !isValid {
-			result.Errors = append(result.Errors, "SPECIAL_"+rule)
+			result.Errors = append(result.Errors, "SPECIAL#"+rule)
 			result.IsValid = false
 			result.Data = guard.Value
 		}

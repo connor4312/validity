@@ -38,7 +38,7 @@ func (guard FloatGuard) checkRules() Result {
 			panic("The guardian FLOAT does not have the rule [" + rule + "]")
 		}
 		if !isValid {
-			result.Errors = append(result.Errors, "FLOAT_"+rule)
+			result.Errors = append(result.Errors, "FLOAT#"+rule)
 			result.IsValid = false
 			result.Data = guard.Value
 		}

@@ -37,7 +37,7 @@ func (guard IntGuard) checkRules() Result {
 			panic("The guardian INT does not have the rule [" + rule + "]")
 		}
 		if !isValid {
-			result.Errors = append(result.Errors, "INT_"+rule)
+			result.Errors = append(result.Errors, "INT#"+rule)
 			result.IsValid = false
 			result.Data = guard.Value
 		}
