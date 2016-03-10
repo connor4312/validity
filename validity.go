@@ -24,7 +24,7 @@ type Error struct {
 // Results is returned from validation functions.
 type Results struct {
 	IsValid bool
-	Errors  []Error
+	Errors  []*Error
 }
 
 // TranslateTo translates the errors into a language and returns a map[string]string
@@ -62,7 +62,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 	results := Results{
 		IsValid: true,
-		Errors:  []Error{},
+		Errors:  []*Error{},
 	}
 
 	for index, field := range rulesMap {
@@ -80,7 +80,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 					Keys:  []string{"REQUIRED"},
 					Field: field,
 				}
-				results.Errors = append(results.Errors, errorObject)
+				results.Errors = append(results.Errors, &errorObject)
 			}
 		} else {
 			value := fmt.Sprintf("%v", rawValue)
@@ -121,7 +121,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 				Keys:  result.Errors,
 				Field: field,
 			}
-			results.Errors = append(results.Errors, errorObject)
+			results.Errors = append(results.Errors, &errorObject)
 		}
 	}
 	return &results
