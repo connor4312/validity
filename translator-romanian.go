@@ -30,7 +30,7 @@ func NewRomanianTranslator() Translater {
 				digits:              "un număr întreg și să aibă exact %s cifre",
 			},
 			stringT: stringT{
-				regex:         "Trebuie să se potrivească acestei expresii regulate: %s",
+				regexp:        "Trebuie să se potrivească acestei expresii regulate: %s",
 				between:       "Trebuie să conțină între %s caractere (inclusiv intervalele)",
 				betweenStrict: "Trebuie să conțină între %s caractere (intervalele nu sunt acceptate)",
 				lenMin:        "Trebuie să conțină cel puțin %s caractere ",

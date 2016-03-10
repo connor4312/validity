@@ -33,7 +33,7 @@ type intT struct {
 }
 
 type stringT struct {
-	regex         string
+	regexp        string
 	between       string
 	betweenStrict string
 	lenMin        string
@@ -136,8 +136,8 @@ func (translator Translator) translateRule(method string, options string) string
 	}
 	getStringMessage := func(rule string) string {
 		switch rule {
-		case "regex":
-			return fmt.Sprintf(translator.stringT.regex, options)
+		case "regexp":
+			return fmt.Sprintf(translator.stringT.regexp, options)
 		case "between":
 			betweenMessage := translator.getMessageBetween(options)
 			return fmt.Sprintf(translator.stringT.between, betweenMessage)

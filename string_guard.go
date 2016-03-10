@@ -45,7 +45,7 @@ func (guard StringGuard) checkRule(fullRule string) (bool, error) {
 	}
 
 	switch rule {
-	case "regex":
+	case "regexp":
 		if len(parts) != 2 {
 			return false, errors.New("This rule is incorrect [" + fullRule + "]. The good format is [regex:exp]")
 		}

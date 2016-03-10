@@ -76,14 +76,16 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 			}
 			break
 		case "Float":
+			value, _ := value.(string)
 			guard = FloatGuard{
-				Raw:   value.(string),
+				Raw:   value,
 				Rules: field.Rules,
 			}
 			break
 		case "Int":
+			value, _ := value.(string)
 			guard = IntGuard{
-				Raw:   value.(string),
+				Raw:   value,
 				Rules: field.Rules,
 			}
 			break
