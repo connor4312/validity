@@ -71,7 +71,7 @@ func (translator Translator) getMessageBetween(old string) string {
 // Translate translates the messages
 func (translator Translator) Translate(results *Results) {
 	for _, fieldErrors := range results.Errors {
-		fieldErrors.Messages = []string{}
+		fieldErrors.Messages = []string{"ceva aici"}
 		for _, fullMethod := range fieldErrors.Keys {
 			parts := strings.SplitN(fullMethod, ":", 2)
 			method := parts[0]
@@ -167,14 +167,12 @@ func (translator Translator) translateRule(method string, options string) string
 		return generalMessage
 	}
 
-	if method == "REQUIRED" {
-		return translator.isRequired
-	}
-
 	parts := strings.SplitN(method, "#", 2)
 
 	if len(parts) == 1 {
 		switch method {
+		case "REQUIRED":
+			return translator.isRequired
 		case "FLOAT":
 			return translator.floatT.floatNumber
 		case "INT":
