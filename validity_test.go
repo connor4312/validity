@@ -36,20 +36,20 @@ func TestValidatesMap(t *testing.T) {
 	}
 }
 
-func TestValidatesStruct(t *testing.T) {
-	data := TestStruct{Foo: "42"}
-	rules := Rules{"Foo": Field{
-		Type:  "Int",
-		Name:  "Foo",
-		Rules: []string{},
-	},
-	}
-
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Does not validate a basic struct of data!")
-	}
-}
+// func TestValidatesStruct(t *testing.T) {
+// 	data := TestStruct{Foo: "42"}
+// 	rules := Rules{"Foo": Field{
+// 		Type:  "Int",
+// 		Name:  "Foo",
+// 		Rules: []string{},
+// 	},
+// 	}
+//
+// 	results := ValidateStruct(data, rules)
+// 	if !results.IsValid {
+// 		t.Errorf("Does not validate a basic struct of data!")
+// 	}
+// }
 
 // func TestValidatesStructTags(t *testing.T) {
 // 	data := TestStructTags{Foo: "NotAnEmail", Bar: 123}
@@ -63,57 +63,57 @@ func TestValidatesStruct(t *testing.T) {
 // 	}
 // }
 
-func TestHandlesBasicTypeConversions(t *testing.T) {
-	data := TestStruct{Foo: "42", Bar: 55, Baz: 12.34}
-	rules := Rules{
-		"Foo": Field{
-			Type:  "Int",
-			Name:  "Foo",
-			Rules: []string{},
-		},
-		"Bar": Field{
-			Type:  "String",
-			Name:  "Bar",
-			Rules: []string{},
-		},
-		"Baz": Field{
-			Type:  "Float",
-			Name:  "Baz",
-			Rules: []string{},
-		},
-	}
+// func TestHandlesBasicTypeConversions(t *testing.T) {
+// 	data := TestStruct{Foo: "42", Bar: 55, Baz: 12.34}
+// 	rules := Rules{
+// 		"Foo": Field{
+// 			Type:  "Int",
+// 			Name:  "Foo",
+// 			Rules: []string{},
+// 		},
+// 		"Bar": Field{
+// 			Type:  "String",
+// 			Name:  "Bar",
+// 			Rules: []string{},
+// 		},
+// 		"Baz": Field{
+// 			Type:  "Float",
+// 			Name:  "Baz",
+// 			Rules: []string{},
+// 		},
+// 	}
+//
+// 	results := ValidateStruct(data, rules)
+// 	if !results.IsValid {
+// 		t.Errorf("Doesn't handle basic type conversions! Errors: %s", results.Errors)
+// 	}
+// }
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Doesn't handle basic type conversions! Errors: %s", results.Errors)
-	}
-}
-
-func TestHandlesInvalidTypeConversions(t *testing.T) {
-	data := TestStruct{Foo: "Not A Number!", Bar: 1234, Baz: 12.34}
-	rules := Rules{
-		"Foo": Field{
-			Type:  "Int",
-			Name:  "Foo",
-			Rules: []string{},
-		},
-		"Bar": Field{
-			Type:  "String",
-			Name:  "Bar",
-			Rules: []string{},
-		},
-		"Baz": Field{
-			Type:  "Float",
-			Name:  "Baz",
-			Rules: []string{},
-		},
-	}
-
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Validator thinks that invalid numbers are numbers!")
-	}
-}
+// func TestHandlesInvalidTypeConversions(t *testing.T) {
+// 	data := TestStruct{Foo: "Not A Number!", Bar: 1234, Baz: 12.34}
+// 	rules := Rules{
+// 		"Foo": Field{
+// 			Type:  "Int",
+// 			Name:  "Foo",
+// 			Rules: []string{},
+// 		},
+// 		"Bar": Field{
+// 			Type:  "String",
+// 			Name:  "Bar",
+// 			Rules: []string{},
+// 		},
+// 		"Baz": Field{
+// 			Type:  "Float",
+// 			Name:  "Baz",
+// 			Rules: []string{},
+// 		},
+// 	}
+//
+// 	results := ValidateStruct(data, rules)
+// 	if results.IsValid {
+// 		t.Errorf("Validator thinks that invalid numbers are numbers!")
+// 	}
+// }
 
 func TestEnforcesRequired(t *testing.T) {
 	data := make(map[string]interface{})
@@ -143,58 +143,58 @@ func TestAllowsOptional(t *testing.T) {
 	}
 }
 
-func TestReturnsProperResultsOnTypeFail(t *testing.T) {
-	data := TestStruct{Foo: "Not A Number!"}
-	rules := Rules{"Foo": Field{
-		Type:  "Int",
-		Name:  "Foo",
-		Rules: []string{""},
-	}}
+// func TestReturnsProperResultsOnTypeFail(t *testing.T) {
+// 	data := TestStruct{Foo: "Not A Number!"}
+// 	rules := Rules{"Foo": Field{
+// 		Type:  "Int",
+// 		Name:  "Foo",
+// 		Rules: []string{""},
+// 	}}
+//
+// 	results := ValidateStruct(data, rules)
+// 	if results.IsValid {
+// 		t.Errorf("Validator did not return a correct isValid.")
+// 	}
+// 	if results.Errors["Foo"][0] != "Int" {
+// 		t.Errorf("Validator did not return the failing key. Returned instead: %s", results.Errors)
+// 	}
+// 	if _, exists := results.Data["Foo"]; exists {
+// 		t.Errorf("Validator should not return data which failed.")
+// 	}
+// }
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Validator did not return a correct isValid.")
-	}
-	if results.Errors["Foo"][0] != "Int" {
-		t.Errorf("Validator did not return the failing key. Returned instead: %s", results.Errors)
-	}
-	if _, exists := results.Data["Foo"]; exists {
-		t.Errorf("Validator should not return data which failed.")
-	}
-}
-
-func TestReturnsProperResultsOnFailedValidators(t *testing.T) {
-	data := TestStruct{Foo: "42"}
-	rules := Rules{"Foo": Field{
-		Type:  "Int",
-		Name:  "Foo",
-		Rules: []string{"Min:50", "Digits:3", "Max: 60"},
-	}}
-
-	results := ValidateStruct(data, rules)
-
-	if results.Errors["Foo"][0] != "Min:50" || results.Errors["Foo"][1] != "Digits:3" {
-		t.Errorf("Validator did not return the failing rules. Wanted a []string{\"Min\", \"Digits\"} Returned instead: %s", results.Errors["Foo"])
-	}
-	if _, exists := results.Data["Foo"]; exists {
-		t.Errorf("Validator should not return data which failed.")
-	}
-}
-
-func TestReturnsProperResultsOnSuccess(t *testing.T) {
-	data := TestStruct{Foo: "42"}
-	rules := Rules{"Foo": Field{
-		Type:  "Int",
-		Name:  "Foo",
-		Rules: []string{"Min:40", "Digits:2", "Max: 60"},
-	}}
-
-	results := ValidateStruct(data, rules)
-
-	if len(results.Errors["Foo"]) != 0 {
-		t.Errorf("Errors should have been zeron on success. Instead: Returned instead: %s", results.Errors["Foo"])
-	}
-	if _, exists := results.Data["Foo"]; !exists {
-		t.Errorf("Validator should return data which which passed.")
-	}
-}
+// func TestReturnsProperResultsOnFailedValidators(t *testing.T) {
+// 	data := TestStruct{Foo: "42"}
+// 	rules := Rules{"Foo": Field{
+// 		Type:  "Int",
+// 		Name:  "Foo",
+// 		Rules: []string{"Min:50", "Digits:3", "Max: 60"},
+// 	}}
+//
+// 	results := ValidateStruct(data, rules)
+//
+// 	if results.Errors["Foo"][0] != "Min:50" || results.Errors["Foo"][1] != "Digits:3" {
+// 		t.Errorf("Validator did not return the failing rules. Wanted a []string{\"Min\", \"Digits\"} Returned instead: %s", results.Errors["Foo"])
+// 	}
+// 	if _, exists := results.Data["Foo"]; exists {
+// 		t.Errorf("Validator should not return data which failed.")
+// 	}
+// }
+//
+// func TestReturnsProperResultsOnSuccess(t *testing.T) {
+// 	data := TestStruct{Foo: "42"}
+// 	rules := Rules{"Foo": Field{
+// 		Type:  "Int",
+// 		Name:  "Foo",
+// 		Rules: []string{"Min:40", "Digits:2", "Max: 60"},
+// 	}}
+//
+// 	results := ValidateStruct(data, rules)
+//
+// 	if len(results.Errors["Foo"]) != 0 {
+// 		t.Errorf("Errors should have been zeron on success. Instead: Returned instead: %s", results.Errors["Foo"])
+// 	}
+// 	if _, exists := results.Data["Foo"]; !exists {
+// 		t.Errorf("Validator should return data which which passed.")
+// 	}
+// }

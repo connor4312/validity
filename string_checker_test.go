@@ -479,8 +479,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: ""}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": ""}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -489,8 +489,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"04.10.2015\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "04.10.2015"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "04.10.2015"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -499,8 +499,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"28.01.2016T14:03:15\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "28.01.2016T14:03:15"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "28.01.2016T14:03:15"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -521,8 +521,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: ""}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": ""}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -531,8 +531,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"04.10.2015\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "04.10.2015"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "04.10.2015"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -541,8 +541,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"28.01.2016T14:03:15\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "28.01.2016T14:03:15"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "28.01.2016T14:03:15"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -563,8 +563,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: ""}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": ""}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -573,8 +573,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"@.\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "@."}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "@."}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -583,8 +583,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"popescu\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "popescu"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "popescu"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -593,8 +593,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"popescu@\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "popescu@"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "popescu@"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -603,8 +603,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"popescu@vlad\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "popescu@vlad"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "popescu@vlad"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -613,8 +613,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"popescu@vlad.\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "popescu@vlad."}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "popescu@vlad."}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -623,8 +623,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"popescu@vlad.ro\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "popescu@vlad.ro"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "popescu@vlad.ro"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -633,8 +633,8 @@ func TestString(t *testing.T) {
 		Convey("Given a good value (less or eq than 40 characters)", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "pocupoăescupopescupopescupopescu@vlad.ro"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "pocupoăescupopescupopescupopescu@vlad.ro"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -643,8 +643,8 @@ func TestString(t *testing.T) {
 		Convey("Given a good value, but too long (more than 40 characters)", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "epescuoăescupopescupopescupopescu@vlad.ro"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "epescuoăescupopescupopescupopescu@vlad.ro"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -665,8 +665,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"FooBar\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "FooBar"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "FooBar"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -675,8 +675,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"BarFoo\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "BarFoo"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "BarFoo"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -698,8 +698,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: ""}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": ""}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -708,8 +708,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"a\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "a"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "a"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -718,8 +718,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"aa\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "aa"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "aa"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -728,8 +728,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"aaaaa\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "aaaaa"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "aaaaa"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -738,8 +738,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"aaaaaa'", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "aaaaaa"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "aaaaaa"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -761,8 +761,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: ""}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": ""}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -771,8 +771,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"a\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "a"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "a"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -781,8 +781,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"aa\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "aa"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "aa"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -791,8 +791,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"aaaaa\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "aaaaa"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "aaaaa"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -801,8 +801,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"aaaaaa'", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "aaaaaa"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "aaaaaa"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -824,8 +824,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"a\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "a"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "a"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -834,8 +834,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"ab\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "ab"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "ab"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -844,8 +844,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"abc\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "abc"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "abc"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -867,8 +867,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"aaa\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "aaa"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "aaa"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -877,8 +877,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"ab\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "ab"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "ab"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -887,8 +887,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"a\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "a"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "a"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -912,8 +912,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"a\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "a"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "a"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 
@@ -922,8 +922,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"ab\"", func() {
 
 			Convey("The result should be valid", func() {
-				data := TestStruct{Foo: "ab"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "ab"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeTrue)
 			})
 
@@ -932,8 +932,8 @@ func TestString(t *testing.T) {
 		Convey("Given the value \"abc\"", func() {
 
 			Convey("The result should not be valid", func() {
-				data := TestStruct{Foo: "abc"}
-				result := ValidateStruct(data, rule)
+				data := map[string]interface{}{"Foo": "abc"}
+				result := Validate(data, rule)
 				So(result.IsValid, ShouldBeFalse)
 			})
 

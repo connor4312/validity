@@ -1,60 +1,73 @@
 package validity
 
 import (
+	"errors"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
 
-// StringValidityChecker is a validator for string types
-type StringValidityChecker struct {
-	Key   string
+// SpecialGuard is a validator for string types
+type SpecialGuard struct {
+	Value string
 	Rules []string
-	Item  string
 }
 
-// GetKey returnst the key
-func (v StringValidityChecker) GetKey() string {
-	return v.Key
+// Check ensures that the value is ok
+func (guard SpecialGuard) Check() Result {
+	result := Result{
+		Errors: []string{},
+	}
+	for _, rule := range guard.Rules {
+		isValid, err := guard.checkRule(rule)
+		if err != nil {
+			panic("The guardian SPECIAL does not have the rule [" + rule + "]")
+		}
+		if !isValid {
+			result.Errors = append(result.Errors, "SPECIAL_"+rule)
+			result.IsValid = false
+			result.Data = guard.Value
+		}
+	}
+	return result
 }
 
-// GetItem returns the item
-func (v StringValidityChecker) GetItem() interface{} {
-	return v.Item
+func (guard SpecialGuard) checkRule(rule string) (bool, error) {
+	switch rule {
+	case "iban":
+		return guard.validateIBAN(), nil
+	case "cif":
+		return guard.validateCIF(), nil
+	case "cnp":
+		return guard.validateCNP(), nil
+	case "shortDate":
+		return guard.validateShortDate(), nil
+	case "longDate":
+		return guard.validateLongDate(), nil
+	case "email":
+		return guard.validateEmail(), nil
+	}
+	return false, errors.New("No rule such that")
 }
 
-// GetRules returns the rules
-func (v StringValidityChecker) GetRules() []string {
-	return v.Rules
-}
-
-// GetErrors returns the errors
-func (v StringValidityChecker) GetErrors() []string {
-	return GetCheckerErrors(v.Rules[1:], &v)
-}
-
-func (v StringValidityChecker) toInt(s string) int {
+func (guard SpecialGuard) toInt(s string) int {
 	out, _ := strconv.ParseInt(s, 10, 64)
 
 	return int(out)
 }
 
-func (v StringValidityChecker) checkRegexp(r string) bool {
+func (guard SpecialGuard) checkRegexp(r string) bool {
 	expression, _ := regexp.Compile(r)
 
-	return expression.MatchString(v.Item)
+	return expression.MatchString(guard.Value)
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-// For explanation involving validation rules, checkout the first huge comment in validity.go.
-//----------------------------------------------------------------------------------------------------------------------
-
-// ValidateIban validates a bank account
+// validateIBAN validates a bank account
 // It must NOT have whitespaces
-func (v StringValidityChecker) ValidateIban() bool {
+func (guard SpecialGuard) validateIBAN() bool {
 
-	iban := strings.ToUpper(v.Item)
+	iban := strings.ToUpper(guard.Value)
 
 	if len(iban) < 10 {
 		// log.Println("The IBAN must have at least 10 characters")
@@ -181,10 +194,10 @@ func (v StringValidityChecker) ValidateIban() bool {
 	return cRest == 1
 }
 
-// ValidateCif checks the romanian id for company
-func (v StringValidityChecker) ValidateCif() bool {
+// validateCIF checks the romanian id for company
+func (guard SpecialGuard) validateCIF() bool {
 
-	rawCif := v.Item
+	rawCif := guard.Value
 
 	if lenght := len(rawCif); lenght > 10 || lenght < 6 {
 		// log.Println("The length must be between 6 and 10 characters")
@@ -225,10 +238,10 @@ func (v StringValidityChecker) ValidateCif() bool {
 	return controlDigit1 == controlDigit2
 }
 
-// ValidateCnp checks the romanian security id - CNP
-func (v StringValidityChecker) ValidateCnp() bool {
+// validateCNP checks the romanian security id - CNP
+func (guard SpecialGuard) validateCNP() bool {
 
-	rawCNP := v.Item
+	rawCNP := guard.Value
 
 	if len(rawCNP) != 13 {
 		// log.Println("The length of CNP is not 13 characters")
@@ -333,54 +346,21 @@ func (v StringValidityChecker) ValidateCnp() bool {
 	return strconv.Itoa(ctrlDigit) == string(rawCNP[12])
 }
 
-// ValidateShortDate validates a date in the format "02.01.2006"
-func (v StringValidityChecker) ValidateShortDate() bool {
+// validateShortDate validates a date in the format "02.01.2006"
+func (guard SpecialGuard) validateShortDate() bool {
 	dateFormat := "02.01.2006"
-	_, err := time.Parse(dateFormat, v.Item)
+	_, err := time.Parse(dateFormat, guard.Value)
 	return err == nil
 }
 
-// ValidateDate validates a date in the format "02.01.2006T15:04:05"
-func (v StringValidityChecker) ValidateDate() bool {
+// validateDate validates a date in the format "02.01.2006T15:04:05"
+func (guard SpecialGuard) validateLongDate() bool {
 	dateFormat := "02.01.2006T15:04:05"
-	_, err := time.Parse(dateFormat, v.Item)
+	_, err := time.Parse(dateFormat, guard.Value)
 	return err == nil
 }
 
-// ValidateEmail checks if the value is an email
-func (v StringValidityChecker) ValidateEmail() bool {
-	return (len([]rune(v.Item)) <= 40) && v.checkRegexp("^.+\\@.+\\..+$")
-}
-
-// ValidateRegexp validates a regex
-func (v StringValidityChecker) ValidateRegexp(r string) bool {
-	return v.checkRegexp(r)
-}
-
-// ValidateBetween checks if the number: min <= len(number) => max
-func (v StringValidityChecker) ValidateBetween(min string, max string) bool {
-	length := len([]rune(v.Item))
-	return length >= v.toInt(min) && length <= v.toInt(max)
-}
-
-// ValidateBetweenStrict checks if the number: min < len(number) > max
-func (v StringValidityChecker) ValidateBetweenStrict(min string, max string) bool {
-	length := len([]rune((v.Item)))
-
-	return length > v.toInt(min) && length < v.toInt(max)
-}
-
-// ValidateMaxLen checks if the number: len(number) <= max
-func (v StringValidityChecker) ValidateMaxLen(length string) bool {
-	return len([]rune(v.Item)) <= v.toInt(length)
-}
-
-// ValidateMinLen checks if the number: min <= len(number)
-func (v StringValidityChecker) ValidateMinLen(length string) bool {
-	return len([]rune(v.Item)) >= v.toInt(length)
-}
-
-// ValidateLen checks if the real len of item is that number
-func (v StringValidityChecker) ValidateLen(length string) bool {
-	return len([]rune(v.Item)) == v.toInt(length)
+// validateEmail checks if the value is an email
+func (guard SpecialGuard) validateEmail() bool {
+	return (len([]rune(guard.Value)) <= 40) && guard.checkRegexp("^.+\\@.+\\..+$")
 }
