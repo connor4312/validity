@@ -47,7 +47,7 @@ func (guard StringGuard) checkRule(fullRule string) (bool, error) {
 	switch rule {
 	case "regexp":
 		if len(parts) != 2 {
-			return false, errors.New("This rule is incorrect [" + fullRule + "]. The good format is [regex:exp]")
+			return false, errors.New("This rule is incorrect [" + fullRule + "]. The good format is [regexp:exp]")
 		}
 		exp := parts[1]
 		return guard.validateRegexp(exp), nil
@@ -67,15 +67,15 @@ func (guard StringGuard) checkRule(fullRule string) (bool, error) {
 		min := args[0]
 		max := args[1]
 		return guard.validateBetweenStrict(min, max), nil
-	case "len_max":
+	case "max_len":
 		if len(parts) != 2 {
-			return false, errors.New("This rule is incorrect [" + fullRule + "]. The good format is [len_max:value]")
+			return false, errors.New("This rule is incorrect [" + fullRule + "]. The good format is [max_len:value]")
 		}
 		max := parts[1]
 		return guard.validateMaxLen(max), nil
-	case "len_min":
+	case "min_len":
 		if len(parts) != 2 {
-			return false, errors.New("This rule is incorrect [" + fullRule + "]. The good format is [len_min:value]")
+			return false, errors.New("This rule is incorrect [" + fullRule + "]. The good format is [min_len:value]")
 		}
 		min := parts[1]
 		return guard.validateMinLen(min), nil

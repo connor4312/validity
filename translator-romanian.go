@@ -33,8 +33,8 @@ func NewRomanianTranslator() Translater {
 				regexp:        "Trebuie să se potrivească acestei expresii regulate: %s",
 				between:       "Trebuie să conțină între %s caractere (inclusiv intervalele)",
 				betweenStrict: "Trebuie să conțină între %s caractere (intervalele nu sunt acceptate)",
-				lenMin:        "Trebuie să conțină cel puțin %s caractere ",
-				lenMax:        "Trebuie să conțină cel puțin %s caractere ",
+				minLen:        "Trebuie să conțină cel puțin %s caractere ",
+				maxLen:        "Trebuie să conțină cel puțin %s caractere ",
 				len:           "Trebuie să conțină exact %s caractere",
 			},
 			specialT: specialT{

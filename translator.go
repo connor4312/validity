@@ -36,8 +36,8 @@ type stringT struct {
 	regexp        string
 	between       string
 	betweenStrict string
-	lenMin        string
-	lenMax        string
+	minLen        string
+	maxLen        string
 	len           string
 }
 
@@ -144,10 +144,10 @@ func (translator Translator) translateRule(method string, options string) string
 		case "between_strict":
 			betweenMessage := translator.getMessageBetween(options)
 			return fmt.Sprintf(translator.stringT.betweenStrict, betweenMessage)
-		case "len_min":
-			return fmt.Sprintf(translator.stringT.lenMin, options)
-		case "len_max":
-			return fmt.Sprintf(translator.stringT.lenMax, options)
+		case "min_len":
+			return fmt.Sprintf(translator.stringT.minLen, options)
+		case "max_len":
+			return fmt.Sprintf(translator.stringT.maxLen, options)
 		case "len":
 			return fmt.Sprintf(translator.stringT.len, options)
 		}
