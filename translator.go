@@ -1,35 +1,74 @@
 package validity
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // Translater ... defines the methods for a Language translato. The translator
 // is the object which transoforms the error codes to human messages
 // It may transform just a particular rule or the entire map
 type Translater interface {
-	TranslateRule(method string, options string) string
 	Translate(results *Results) map[string][]string
+}
+
+type floatT struct {
+	floatNumber string
+	value       string
+	valueStrict string
+	min         string
+	max         string
+	digits      string
+}
+
+type intT struct {
+	intNumber           string
+	value               string
+	valueStrict         string
+	digits              string
+	digitsBetween       string
+	digitsBetweenStrict string
+	min                 string
+	max                 string
+}
+
+type stringT struct {
+	regex         string
+	between       string
+	betweenStrict string
+	lenMin        string
+	lenMax        string
+	len           string
+}
+
+type specialT struct {
+	iban      string
+	cif       string
+	cnp       string
+	shortDate string
+	longDate  string
+	email     string
 }
 
 // Translator is the basic type of a translator
 // It must be inherited
-type translator struct {
-	and string
+type Translator struct {
+	floatT   floatT
+	intT     intT
+	stringT  stringT
+	specialT specialT
+	itMustBe string
+	and      string
 }
 
 //
-func (translator translator) getMessageBetween(old string) string {
+func (translator Translator) getMessageBetween(old string) string {
 	newString := strings.Replace(old, ",", " "+translator.and+" ", -1)
 	return newString
 }
 
-// So, it takes a Translator and the result
-//
-// It iterates through the errors
-// It splits the error message
-//
-// And then it passes to the child translator which provides the translation
-//
-func (translator translator) work(child Translater, results *Results) map[string][]string {
+// Translate translates the messages
+func (translator Translator) Translate(results *Results) map[string][]string {
 	humanMessages := map[string][]string{}
 	for element, fieldErrors := range results.Errors {
 		for _, fullMethod := range fieldErrors {
@@ -39,13 +78,119 @@ func (translator translator) work(child Translater, results *Results) map[string
 			if len(parts) == 2 {
 				options = parts[1]
 			}
-			item := child.TranslateRule(method, options)
-			currentMessages, exists := humanMessages[element]
+			humanMessage := translator.itMustBe + " " + translator.translateRule(method, options)
+			messages, exists := humanMessages[element]
 			if !exists {
 				humanMessages[element] = []string{}
 			}
-			humanMessages[element] = append(currentMessages, item)
+			humanMessages[element] = append(messages, humanMessage)
 		}
 	}
 	return humanMessages
+}
+
+// translateRule translates a method into a english human message
+func (translator Translator) translateRule(method string, options string) string {
+
+	generalMessage := "There is no translation rule for [" + method + ":" + options + "]"
+
+	getFloatMessage := func(rule string) string {
+		switch rule {
+		case "value":
+			betweenMessage := translator.getMessageBetween(options)
+			return fmt.Sprintf(translator.floatT.value, betweenMessage)
+		case "value_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return fmt.Sprintf(translator.floatT.valueStrict, betweenMessage)
+		case "min":
+			return fmt.Sprintf(translator.floatT.min, options)
+		case "max":
+			return fmt.Sprintf(translator.floatT.max, options)
+		case "digits":
+			return fmt.Sprintf(translator.floatT.digits, options)
+		}
+		return generalMessage
+	}
+	getIntMessage := func(rule string) string {
+		switch rule {
+		case "value":
+			betweenMessage := translator.getMessageBetween(options)
+			return fmt.Sprintf(translator.intT.value, betweenMessage)
+		case "value_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return fmt.Sprintf(translator.intT.valueStrict, betweenMessage)
+		case "digits_between":
+			betweenMessage := translator.getMessageBetween(options)
+			return fmt.Sprintf(translator.intT.digitsBetween, betweenMessage)
+		case "digits_between_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return fmt.Sprintf(translator.intT.digitsBetweenStrict, betweenMessage)
+		case "min":
+			return fmt.Sprintf(translator.intT.min, options)
+		case "max":
+			return fmt.Sprintf(translator.intT.max, options)
+		case "digits":
+			return fmt.Sprintf(translator.intT.digits, options)
+		}
+		return generalMessage
+	}
+	getStringMessage := func(rule string) string {
+		switch rule {
+		case "regex":
+			return "Trebuie să se potrivească acestei expresii regulate: " + options
+		case "between":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să conțină între " + betweenMessage + " caractere (inclusiv intervalele)"
+		case "between_strict":
+			betweenMessage := translator.getMessageBetween(options)
+			return "Trebuie să conțină între " + betweenMessage + " caractere (intervalele nu sunt acceptate)"
+		case "len_min":
+			return "Trebuie să conțină cel puțin " + options + " caractere "
+		case "len_max":
+			return "Trebuie să conțină cel puțin " + options + " caractere "
+		case "len":
+			return "Trebuie să conțină exact " + options + " caractere"
+		}
+		return generalMessage
+	}
+	getSpecialMessage := func(rule string) string {
+		switch rule {
+		case "iban":
+			return translator.specialT.iban
+		case "cif":
+			return translator.specialT.cif
+		case "cnp":
+			return translator.specialT.cnp
+		case "shortDate":
+			return translator.specialT.shortDate
+		case "longDate":
+			return translator.specialT.longDate
+		case "email":
+			return translator.specialT.email
+		}
+		return generalMessage
+	}
+
+	parts := strings.SplitN(method, "#", 2)
+
+	if len(parts) == 1 {
+		switch method {
+		case "FLOAT":
+			return translator.floatT.floatNumber
+		case "INT":
+			return translator.intT.intNumber
+		}
+	}
+	rule := parts[1]
+	switch parts[0] {
+	case "FLOAT":
+		return getFloatMessage(rule)
+	case "INT":
+		return getIntMessage(rule)
+	case "STRING":
+		return getStringMessage(rule)
+	case "SPECIAL":
+		return getSpecialMessage(rule)
+	}
+	return generalMessage
 }
