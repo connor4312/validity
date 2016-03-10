@@ -137,19 +137,19 @@ func (translator Translator) translateRule(method string, options string) string
 	getStringMessage := func(rule string) string {
 		switch rule {
 		case "regex":
-			return "Trebuie să se potrivească acestei expresii regulate: " + options
+			return fmt.Sprintf(translator.stringT.regex, options)
 		case "between":
 			betweenMessage := translator.getMessageBetween(options)
-			return "Trebuie să conțină între " + betweenMessage + " caractere (inclusiv intervalele)"
+			return fmt.Sprintf(translator.stringT.between, betweenMessage)
 		case "between_strict":
 			betweenMessage := translator.getMessageBetween(options)
-			return "Trebuie să conțină între " + betweenMessage + " caractere (intervalele nu sunt acceptate)"
+			return fmt.Sprintf(translator.stringT.betweenStrict, betweenMessage)
 		case "len_min":
-			return "Trebuie să conțină cel puțin " + options + " caractere "
+			return fmt.Sprintf(translator.stringT.lenMin, options)
 		case "len_max":
-			return "Trebuie să conțină cel puțin " + options + " caractere "
+			return fmt.Sprintf(translator.stringT.lenMax, options)
 		case "len":
-			return "Trebuie să conțină exact " + options + " caractere"
+			return fmt.Sprintf(translator.stringT.len, options)
 		}
 		return generalMessage
 	}

@@ -29,6 +29,14 @@ func NewRomanianTranslator() Translater {
 				max:                 "un număr întreg mai mic sau egal cu %s",
 				digits:              "un număr întreg și să aibă exact %s cifre",
 			},
+			stringT: stringT{
+				regex:         "Trebuie să se potrivească acestei expresii regulate: %s",
+				between:       "Trebuie să conțină între %s caractere (inclusiv intervalele)",
+				betweenStrict: "Trebuie să conțină între %s caractere (intervalele nu sunt acceptate)",
+				lenMin:        "Trebuie să conțină cel puțin %s caractere ",
+				lenMax:        "Trebuie să conțină cel puțin %s caractere ",
+				len:           "Trebuie să conțină exact %s caractere",
+			},
 			specialT: specialT{
 				iban:      "un cont bancar valid (IBAN)",
 				cif:       "un cod de identificare fiscală valid (CIF)",
