@@ -71,7 +71,7 @@ func (translator Translator) getMessageBetween(old string) string {
 // Translate translates the messages
 func (translator Translator) Translate(results *Results) {
 	for _, fieldErrors := range results.Errors {
-		fieldErrors.Messages = []string{"ceva aici"}
+		fieldErrors.Messages = []string{}
 		for _, fullMethod := range fieldErrors.Keys {
 			parts := strings.SplitN(fullMethod, ":", 2)
 			method := parts[0]
