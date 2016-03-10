@@ -2,7 +2,6 @@ package validity
 
 import (
 	"errors"
-	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -11,24 +10,21 @@ import (
 // FloatGuard is a validator for float types
 type FloatGuard struct {
 	Raw   string
-	Value float64
+	Value float32
 	Rules []string
 }
 
 // Check ensures that the value is ok
 func (guard FloatGuard) Check() Result {
-	log.Println("The raw is: " + guard.Raw)
-	float32Value, errFloat := strconv.ParseFloat(guard.Raw, 32)
+	float64Value, errFloat := strconv.ParseFloat(guard.Raw, 32)
 	if errFloat != nil {
-		log.Println("The value " + guard.Raw + " IS NOT a float")
 		return Result{
 			Errors:  []string{"FLOAT"},
 			IsValid: false,
 			Data:    guard.Value,
 		}
 	}
-	log.Println("The value " + guard.Raw + " IS float")
-	guard.Value = float64(float32Value)
+	guard.Value = float32(float64Value)
 	return guard.checkRules()
 }
 
@@ -38,6 +34,7 @@ func (guard FloatGuard) checkRules() Result {
 		IsValid: true,
 	}
 	for _, rule := range guard.Rules {
+
 		isValid, err := guard.checkRule(rule)
 		if err != nil {
 			panic(err)
@@ -103,9 +100,9 @@ func (guard FloatGuard) checkRule(fullRule string) (bool, error) {
 }
 
 // Converts a string to an float. That's all there is!
-func (guard FloatGuard) toFloat(s string) float64 {
-	out, _ := strconv.ParseFloat(s, 64)
-	return out
+func (guard FloatGuard) toFloat(s string) float32 {
+	out, _ := strconv.ParseFloat(s, 32)
+	return float32(out)
 }
 
 // Converts a string to an integer. That's all there is!
@@ -132,8 +129,8 @@ func (guard FloatGuard) validateValue(min string, max string) bool {
 func (guard FloatGuard) validateDigits(num string) bool {
 
 	// Gets the number of non-decimal digits from the item.
-	getDigits := func(value float64) int64 {
-		return int64(math.Ceil(math.Log10(value)))
+	getDigits := func(value float32) int64 {
+		return int64(math.Ceil(math.Log10(float64(value))))
 	}
 	return getDigits(guard.Value) == guard.toInt(num)
 }

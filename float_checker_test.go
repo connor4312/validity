@@ -1,7 +1,6 @@
 package validity
 
 import (
-	"log"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -24,7 +23,6 @@ func TestFloat(t *testing.T) {
 			Convey("The value should be valid", func() {
 				data := map[string]interface{}{"Baz": 20}
 				result := Validate(data, rules)
-				log.Println(result.Errors)
 				So(result.IsValid, ShouldBeTrue)
 			})
 

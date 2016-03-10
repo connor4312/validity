@@ -33,6 +33,7 @@ func (guard IntGuard) checkRules() Result {
 		IsValid: true,
 	}
 	for _, rule := range guard.Rules {
+
 		isValid, err := guard.checkRule(rule)
 		if err != nil {
 			panic(err)
@@ -83,7 +84,7 @@ func (guard IntGuard) checkRule(fullRule string) (bool, error) {
 		}
 		min := args[0]
 		max := args[1]
-		return guard.validateValue(min, max), nil
+		return guard.validateDigitsBetween(min, max), nil
 
 	case "digits_between_strict":
 		args := getArguments(parts[1])
@@ -92,7 +93,7 @@ func (guard IntGuard) checkRule(fullRule string) (bool, error) {
 		}
 		min := args[0]
 		max := args[1]
-		return guard.validateValueStrict(min, max), nil
+		return guard.validateDigitsBetweenStrict(min, max), nil
 
 	case "max":
 		if len(parts) != 2 {
@@ -154,18 +155,16 @@ func (guard IntGuard) validateDigits(num string) bool {
 	return guard.getDigits() == guard.toInt(num)
 }
 
-// validateDigitsBetweenStrict checks if the number of digits: min < digits > max
-func (guard IntGuard) validateDigitsBetweenStrict(min string, max string) bool {
-	digits := guard.getDigits()
-
-	return digits > guard.toInt(min) && digits < guard.toInt(max)
-}
-
 // validateDigitsBetween checks if the number of digits: min <= digits => max
 func (guard IntGuard) validateDigitsBetween(min string, max string) bool {
 	digits := guard.getDigits()
-
 	return digits >= guard.toInt(min) && digits <= guard.toInt(max)
+}
+
+// validateDigitsBetweenStrict checks if the number of digits: min < digits > max
+func (guard IntGuard) validateDigitsBetweenStrict(min string, max string) bool {
+	digits := guard.getDigits()
+	return digits > guard.toInt(min) && digits < guard.toInt(max)
 }
 
 // validateMax checks if the number: len(number) <= max
