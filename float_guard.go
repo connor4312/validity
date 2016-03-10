@@ -2,6 +2,7 @@ package validity
 
 import (
 	"errors"
+	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -16,14 +17,17 @@ type FloatGuard struct {
 
 // Check ensures that the value is ok
 func (guard FloatGuard) Check() Result {
+	log.Println("The raw is: " + guard.Raw)
 	float32Value, errFloat := strconv.ParseFloat(guard.Raw, 32)
 	if errFloat != nil {
+		log.Println("The value " + guard.Raw + " IS NOT a float")
 		return Result{
 			Errors:  []string{"FLOAT"},
 			IsValid: false,
 			Data:    guard.Value,
 		}
 	}
+	log.Println("The value " + guard.Raw + " IS float")
 	guard.Value = float64(float32Value)
 	return guard.checkRules()
 }
@@ -35,7 +39,7 @@ func (guard FloatGuard) checkRules() Result {
 	for _, rule := range guard.Rules {
 		isValid, err := guard.checkRule(rule)
 		if err != nil {
-			panic("The guardian FLOAT does not have the rule [" + rule + "]")
+			panic(err)
 		}
 		if !isValid {
 			result.Errors = append(result.Errors, "FLOAT#"+rule)
@@ -94,7 +98,7 @@ func (guard FloatGuard) checkRule(fullRule string) (bool, error) {
 		digits := parts[1]
 		return guard.validateDigits(digits), nil
 	}
-	return false, errors.New("No rule such that")
+	return false, errors.New("The guardian FLOAT does not have the rule [" + rule + "]")
 }
 
 // Converts a string to an float. That's all there is!

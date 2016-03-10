@@ -22,7 +22,7 @@ func (guard SpecialGuard) Check() Result {
 	for _, rule := range guard.Rules {
 		isValid, err := guard.checkRule(rule)
 		if err != nil {
-			panic("The guardian SPECIAL does not have the rule [" + rule + "]")
+			panic(err)
 		}
 		if !isValid {
 			result.Errors = append(result.Errors, "SPECIAL#"+rule)
@@ -48,7 +48,7 @@ func (guard SpecialGuard) checkRule(rule string) (bool, error) {
 	case "email":
 		return guard.validateEmail(), nil
 	}
-	return false, errors.New("No rule such that")
+	return false, errors.New("The guardian SPECIAL does not have the rule [" + rule + "]")
 }
 
 func (guard SpecialGuard) toInt(s string) int {

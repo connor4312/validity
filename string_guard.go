@@ -21,7 +21,7 @@ func (guard StringGuard) Check() Result {
 	for _, rule := range guard.Rules {
 		isValid, err := guard.checkRule(rule)
 		if err != nil {
-			panic("The guardian STRING does not have the rule [" + rule + "]")
+			panic(err)
 		}
 		if !isValid {
 			result.Errors = append(result.Errors, "STRING#"+rule)
@@ -86,7 +86,7 @@ func (guard StringGuard) checkRule(fullRule string) (bool, error) {
 		len := parts[1]
 		return guard.validateLen(len), nil
 	}
-	return false, errors.New("No rule such that")
+	return false, errors.New("The guardian STRING does not have the rule [" + rule + "]")
 }
 
 func (guard StringGuard) toInt(s string) int {

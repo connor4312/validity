@@ -1,5 +1,7 @@
 package validity
 
+import "fmt"
+
 // Rules is a map of strings to slices of things. The keys of the map should be the field names to validate,
 // in the struct or map of input given. The values should be slices of validators to run. For example:
 type Rules map[string]Field
@@ -65,25 +67,24 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 			guard  Guard
 		)
 
-		value := mapData[index]
+		rawValue := mapData[index]
+		value := fmt.Sprintf("%v", rawValue)
 		key := index
 
 		switch field.Type {
 		case "String":
 			guard = StringGuard{
-				Value: value.(string),
+				Value: value,
 				Rules: field.Rules,
 			}
 			break
 		case "Float":
-			value, _ := value.(string)
 			guard = FloatGuard{
 				Raw:   value,
 				Rules: field.Rules,
 			}
 			break
 		case "Int":
-			value, _ := value.(string)
 			guard = IntGuard{
 				Raw:   value,
 				Rules: field.Rules,
@@ -91,7 +92,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 			break
 		case "Special":
 			guard = SpecialGuard{
-				Value: value.(string),
+				Value: value,
 				Rules: field.Rules,
 			}
 			break

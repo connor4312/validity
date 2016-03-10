@@ -34,7 +34,7 @@ func (guard IntGuard) checkRules() Result {
 	for _, rule := range guard.Rules {
 		isValid, err := guard.checkRule(rule)
 		if err != nil {
-			panic("The guardian INT does not have the rule [" + rule + "]")
+			panic(err)
 		}
 		if !isValid {
 			result.Errors = append(result.Errors, "INT#"+rule)
@@ -112,7 +112,7 @@ func (guard IntGuard) checkRule(fullRule string) (bool, error) {
 		digits := parts[1]
 		return guard.validateDigits(digits), nil
 	}
-	return false, errors.New("No rule such that")
+	return false, errors.New("The guardian INT does not have the rule [" + rule + "]")
 }
 
 // Converts a string to an integer. That's all there is!
