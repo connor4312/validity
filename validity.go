@@ -8,9 +8,10 @@ type Rules map[string]Field
 
 // Field represents the field to test
 type Field struct {
-	Name  string
-	Type  string
-	Rules []string
+	Name     string
+	Type     string
+	Rules    []string
+	Optional bool
 }
 
 // Results is returned from validation functions.
@@ -66,44 +67,52 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 			guard  Guard
 		)
 
-		rawValue := mapData[index]
-		value := fmt.Sprintf("%v", rawValue)
+		rawValue, isPresent := mapData[index]
 		key := index
 
-		switch field.Type {
-		case "String":
-			guard = StringGuard{
-				Value: value,
-				Rules: field.Rules,
+		if !isPresent {
+			if !field.Optional {
+				results.Data[key] = field
+				results.Errors[key] = []string{"REQUIRED"}
 			}
-			break
-		case "Float":
-			guard = FloatGuard{
-				Raw:   value,
-				Rules: field.Rules,
-			}
-			break
-		case "Int":
-			guard = IntGuard{
-				Raw:   value,
-				Rules: field.Rules,
-			}
-			break
-		case "Special":
-			guard = SpecialGuard{
-				Value: value,
-				Rules: field.Rules,
-			}
-			break
-		}
-		result = guard.Check()
+		} else {
+			value := fmt.Sprintf("%v", rawValue)
 
-		if !result.IsValid {
-			results.IsValid = false
-		}
+			switch field.Type {
+			case "String":
+				guard = StringGuard{
+					Value: value,
+					Rules: field.Rules,
+				}
+				break
+			case "Float":
+				guard = FloatGuard{
+					Raw:   value,
+					Rules: field.Rules,
+				}
+				break
+			case "Int":
+				guard = IntGuard{
+					Raw:   value,
+					Rules: field.Rules,
+				}
+				break
+			case "Special":
+				guard = SpecialGuard{
+					Value: value,
+					Rules: field.Rules,
+				}
+				break
+			}
+			result = guard.Check()
 
-		results.Data[key] = field
-		results.Errors[key] = result.Errors
+			if !result.IsValid {
+				results.IsValid = false
+			}
+
+			results.Data[key] = field
+			results.Errors[key] = result.Errors
+		}
 	}
 	return &results
 }

@@ -53,12 +53,13 @@ type specialT struct {
 // Translator is the basic type of a translator
 // It must be inherited
 type Translator struct {
-	floatT   floatT
-	intT     intT
-	stringT  stringT
-	specialT specialT
-	itMustBe string
-	and      string
+	floatT     floatT
+	intT       intT
+	stringT    stringT
+	specialT   specialT
+	isRequired string
+	itMustBe   string
+	and        string
 }
 
 //
@@ -169,6 +170,10 @@ func (translator Translator) translateRule(method string, options string) string
 			return translator.specialT.email
 		}
 		return generalMessage
+	}
+
+	if method == "REQUIRED" {
+		return translator.isRequired
 	}
 
 	parts := strings.SplitN(method, "#", 2)

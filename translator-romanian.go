@@ -45,8 +45,9 @@ func NewRomanianTranslator() Translater {
 				longDate:  "o dată calendaristică lungă. De exemplu: 02.01.2006T15:04:05",
 				email:     "o adresă de e-mail validă",
 			},
-			itMustBe: "Trebuie să fie",
-			and:      "și",
+			isRequired: "neapărat completat",
+			itMustBe:   "Trebuie să fie",
+			and:        "și",
 		},
 	}
 }
