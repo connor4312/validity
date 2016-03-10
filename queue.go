@@ -55,7 +55,7 @@ func (c *Queue) RunParsers() {
 		}
 
 		// This calls a function like "ParseInt" present on the Parsers map.
-		callIn(Parsers{}, "Parse"+validator.Name, c, key, item, validator)
+		callIn(Parsers{}, "Parse"+validator.Type, c, key, item, validator)
 	}
 }
 
