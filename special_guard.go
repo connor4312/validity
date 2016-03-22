@@ -363,5 +363,5 @@ func (guard SpecialGuard) validateLongDate() bool {
 // validateEmail checks if the value is an email
 func (guard SpecialGuard) validateEmail() bool {
 	length := len([]rune(guard.Value))
-	return (length > 8 && length < 25 && guard.checkRegexp("^.+\\@.+\\..+$"))
+	return (length >= 8 && length <= 25 && guard.checkRegexp("^.+\\@.+\\..+$"))
 }
