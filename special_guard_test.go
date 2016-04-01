@@ -636,7 +636,7 @@ func TestSpecial(t *testing.T) {
 			Convey("The result should not be valid", func() {
 				data := map[string]interface{}{"Foo": "pocupoăescupopescupopescupopescu@vlad.ro"}
 				result := Validate(data, rule)
-				So(result.IsValid, ShouldBeTrue)
+				So(result.IsValid, ShouldBeFalse)
 			})
 
 		})

@@ -1,6 +1,9 @@
 package validity
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // Rules is a map of strings to slices of things. The keys of the map should be the field names to validate,
 // in the struct or map of input given. The values should be slices of validators to run. For example:
@@ -65,64 +68,83 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 		Errors:  []*Error{},
 	}
 
+	messages := make(chan Error, len(rulesMap))
+
+	wg := new(sync.WaitGroup)
+
+	wg.Add(len(rulesMap))
+
 	for index, field := range rulesMap {
-
-		var (
-			result Result
-			guard  Guard
-		)
-
 		rawValue, isPresent := mapData[index]
+		go func() {
 
-		if !isPresent {
-			if !field.Optional {
-				errorObject := Error{
-					Keys:  []string{"REQUIRED"},
-					Field: field,
+			var (
+				result Result
+				guard  Guard
+			)
+
+			if !isPresent {
+				if !field.Optional {
+
+					errorObject := Error{
+						Keys:  []string{"REQUIRED"},
+						Field: field,
+					}
+
+					messages <- errorObject
 				}
-				results.Errors = append(results.Errors, &errorObject)
+
+			} else {
+				value := fmt.Sprintf("%v", rawValue)
+
+				switch field.Type {
+				case "String":
+					guard = StringGuard{
+						Value: value,
+						Rules: field.Rules,
+					}
+					break
+				case "Float":
+					guard = FloatGuard{
+						Raw:   value,
+						Rules: field.Rules,
+					}
+					break
+				case "Int":
+					guard = IntGuard{
+						Raw:   value,
+						Rules: field.Rules,
+					}
+					break
+				case "Special":
+					guard = SpecialGuard{
+						Value: value,
+						Rules: field.Rules,
+					}
+					break
+				}
+				result = guard.Check()
+
+				if !result.IsValid {
+
+					errorObject := Error{
+						Keys:  result.Errors,
+						Field: field,
+					}
+
+					messages <- errorObject
+				}
 			}
-		} else {
-			value := fmt.Sprintf("%v", rawValue)
+			defer wg.Done()
+		}()
+	}
 
-			switch field.Type {
-			case "String":
-				guard = StringGuard{
-					Value: value,
-					Rules: field.Rules,
-				}
-				break
-			case "Float":
-				guard = FloatGuard{
-					Raw:   value,
-					Rules: field.Rules,
-				}
-				break
-			case "Int":
-				guard = IntGuard{
-					Raw:   value,
-					Rules: field.Rules,
-				}
-				break
-			case "Special":
-				guard = SpecialGuard{
-					Value: value,
-					Rules: field.Rules,
-				}
-				break
-			}
-			result = guard.Check()
+	wg.Wait()
+	close(messages)
 
-			if !result.IsValid {
-				results.IsValid = false
-
-				errorObject := Error{
-					Keys:  result.Errors,
-					Field: field,
-				}
-				results.Errors = append(results.Errors, &errorObject)
-			}
-		}
+	for errorObject := range messages {
+		results.IsValid = false
+		results.Errors = append(results.Errors, &errorObject)
 	}
 	return &results
 }
