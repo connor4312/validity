@@ -2,6 +2,7 @@ package validity
 
 import (
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -142,7 +143,11 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 	wg.Wait()
 	close(messages)
 
+	log.Println("The messages are:")
+
 	for errorObject := range messages {
+
+		log.Println(messages)
 		results.IsValid = false
 		results.Errors = append(results.Errors, &errorObject)
 	}
