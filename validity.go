@@ -69,7 +69,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 		Errors:  []*Error{},
 	}
 
-	messages := make(chan Error, len(rulesMap))
+	messages := make(chan *Error, len(rulesMap))
 
 	wg := new(sync.WaitGroup)
 
@@ -77,7 +77,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 	for index, field := range rulesMap {
 		rawValue, isPresent := mapData[index]
-		go func() {
+		go func(field Field) {
 
 			var (
 				result Result
@@ -92,7 +92,9 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 						Field: field,
 					}
 
-					messages <- errorObject
+					log.Println("From required: " + errorObject.Field.Name)
+
+					messages <- &errorObject
 				}
 
 			} else {
@@ -133,11 +135,13 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 						Field: field,
 					}
 
-					messages <- errorObject
+					log.Println("From validate: " + errorObject.Field.Name)
+
+					messages <- &errorObject
 				}
 			}
 			defer wg.Done()
-		}()
+		}(field)
 	}
 
 	wg.Wait()
@@ -149,7 +153,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 		log.Println(errorObject.Field)
 		results.IsValid = false
-		results.Errors = append(results.Errors, &errorObject)
+		results.Errors = append(results.Errors, errorObject)
 	}
 	return &results
 }
