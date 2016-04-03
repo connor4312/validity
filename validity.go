@@ -147,7 +147,7 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 	for errorObject := range messages {
 
-		log.Println(messages)
+		log.Println(errorObject.Field)
 		results.IsValid = false
 		results.Errors = append(results.Errors, &errorObject)
 	}
