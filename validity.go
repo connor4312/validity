@@ -2,7 +2,6 @@ package validity
 
 import (
 	"fmt"
-	"log"
 	"sync"
 )
 
@@ -75,9 +74,9 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 	wg.Add(len(rulesMap))
 
-	for index, field := range rulesMap {
-		rawValue, isPresent := mapData[index]
-		go func(field Field) {
+	for index, currentField := range rulesMap {
+		currentRawValue, currentIsPresent := mapData[index]
+		go func(field Field, rawValue interface{}, isPresent bool) {
 
 			var (
 				result Result
@@ -86,17 +85,12 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 
 			if !isPresent {
 				if !field.Optional {
-
 					errorObject := Error{
 						Keys:  []string{"REQUIRED"},
 						Field: field,
 					}
-
-					log.Println("From required: " + errorObject.Field.Name)
-
 					messages <- &errorObject
 				}
-
 			} else {
 				value := fmt.Sprintf("%v", rawValue)
 
@@ -135,23 +129,17 @@ func Validate(mapData map[string]interface{}, rulesMap Rules) *Results {
 						Field: field,
 					}
 
-					log.Println("From validate: " + errorObject.Field.Name)
-
 					messages <- &errorObject
 				}
 			}
 			defer wg.Done()
-		}(field)
+		}(currentField, currentRawValue, currentIsPresent)
 	}
 
 	wg.Wait()
 	close(messages)
 
-	log.Println("The messages are:")
-
 	for errorObject := range messages {
-
-		log.Println(errorObject.Field)
 		results.IsValid = false
 		results.Errors = append(results.Errors, errorObject)
 	}
