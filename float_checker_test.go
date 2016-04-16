@@ -2,146 +2,263 @@ package validity
 
 import (
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestFloatValidateAcceptedPass(t *testing.T) {
-	data := TestStruct{Baz: 1}
-	rules := ValidationRules{"Baz": []string{"Float", "Accepted"}}
+func TestFloat(t *testing.T) {
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Float accepted validator does not pass.")
-	}
-}
-func TestFloatValidateAcceptedFail(t *testing.T) {
-	data := TestStruct{Baz: 0}
-	rules := ValidationRules{"Baz": []string{"Float", "Accepted"}}
+	// value
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float accepted validator does not fail.")
-	}
-}
+	Convey("Given the rule \"value:0,100\"", t, func() {
 
+		rules := Rules{"Baz": Field{
+			Name:  "Baz",
+			Type:  "Float",
+			Rules: []string{"value:0,100"},
+		}}
 
+		Convey("Given the value 50 (between intervals)", func() {
 
-func TestFloatValidateBetweenPass(t *testing.T) {
-	data := TestStruct{Baz: 5}
-	rules := ValidationRules{"Baz": []string{"Float", "between:3,6"}}
+			Convey("The value should be valid", func() {
+				data := map[string]interface{}{"Baz": 20}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Float between validator does not pass.")
-	}
-}
-func TestFloatValidateBetweenFailLower(t *testing.T) {
-	data := TestStruct{Baz: 1}
-	rules := ValidationRules{"Baz": []string{"Float", "between:3,6"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float between validator does not fail on lower.")
-	}
-}
-func TestFloatValidateBetweenFailUpper(t *testing.T) {
-	data := TestStruct{Baz: 8}
-	rules := ValidationRules{"Baz": []string{"Float", "between:3,6"}}
+		Convey("Given the value 0 (lower interval)", func() {
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float between validator does not fail on upper.")
-	}
-}
+			Convey("The value should be valid", func() {
+				data := map[string]interface{}{"Baz": 0}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
+		})
 
+		Convey("Given the value 100 (upper interval)", func() {
 
-func TestFloatValidateDigitsPass(t *testing.T) {
-	data := TestStruct{Baz: 500.5252}
-	rules := ValidationRules{"Baz": []string{"Float", "digits:3"}}
+			Convey("The value should be valid", func() {
+				data := map[string]interface{}{"Baz": 100}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Float digits validator does not pass.")
-	}
-}
-func TestFloatValidateBetweenFail(t *testing.T) {
-	data := TestStruct{Baz: 500.5}
-	rules := ValidationRules{"Baz": []string{"Float", "digits:4"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float digits validator does not fail.")
-	}
-}
+		Convey("Given the value -1 (lower interval)", func() {
 
+			Convey("The value should not be valid", func() {
+				data := map[string]interface{}{"Baz": -1}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeFalse)
+			})
 
+		})
 
-func TestFloatValidateDigitsBetweenPass(t *testing.T) {
-	data := TestStruct{Baz: 500}
-	rules := ValidationRules{"Baz": []string{"Float", "digits_between:2,4"}}
+		Convey("Given the value 101 (upper interval)", func() {
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Float between validator does not pass.")
-	}
-}
-func TestFloatValidateDigitsBetweenFailLower(t *testing.T) {
-	data := TestStruct{Baz: 5}
-	rules := ValidationRules{"Baz": []string{"Float", "between:2,4"}}
+			Convey("The value should not be valid", func() {
+				data := map[string]interface{}{"Baz": 101}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeFalse)
+			})
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float digits between validator does not fail on lower.")
-	}
-}
-func TestFloatValidateDigitsBetweenFailUpper(t *testing.T) {
-	data := TestStruct{Baz: 5000000}
-	rules := ValidationRules{"Baz": []string{"Float", "between:2,4"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float digits between validator does not fail on upper.")
-	}
-}
+	})
 
+	// value_strict
 
+	Convey("Given the rule \"value_strict:500.2,2000.8\"", t, func() {
+		rules := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"value_strict:500.2,2000.8"},
+		},
+		}
 
-func TestFloatValidateMaxPass(t *testing.T) {
-	data := TestStruct{Baz: 4}
-	rules := ValidationRules{"Baz": []string{"Float", "max:5"}}
+		Convey("Given the value 1000.78 (between intervals)", func() {
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Float max validator does not pass.")
-	}
-}
-func TestFloatValidateMaxFail(t *testing.T) {
-	data := TestStruct{Baz: 8}
-	rules := ValidationRules{"Baz": []string{"Float", "max:5"}}
+			Convey("The value should be valid", func() {
+				data := map[string]interface{}{"Baz": 1000.78}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float max validator does not fail.")
-	}
-}
+		})
 
+		Convey("Given the value 500.3 (lower interval)", func() {
 
+			Convey("The value should be valid", func() {
+				data := map[string]interface{}{"Baz": 500.3}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeTrue)
+			})
 
-func TestFloatValidateMinPass(t *testing.T) {
-	data := TestStruct{Baz: 8}
-	rules := ValidationRules{"Baz": []string{"Float", "min:5"}}
+		})
 
-	results := ValidateStruct(data, rules)
-	if !results.IsValid {
-		t.Errorf("Float min validator does not pass.")
-	}
-}
-func TestFloatValidateMinFail(t *testing.T) {
-	data := TestStruct{Baz: 4}
-	rules := ValidationRules{"Baz": []string{"Float", "min:5"}}
+		Convey("Given the value 2000.7 (upper interval)", func() {
 
-	results := ValidateStruct(data, rules)
-	if results.IsValid {
-		t.Errorf("Float min validator does not fail.")
-	}
+			Convey("The value should be valid", func() {
+				data := map[string]interface{}{"Baz": 2000.7}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 500.2 (lower interval)", func() {
+
+			Convey("The value should not be valid", func() {
+				data := map[string]interface{}{"Baz": 500.2}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 2000.8 (upper interval)", func() {
+
+			Convey("The value should not be valid", func() {
+				data := map[string]interface{}{"Baz": 2000.8}
+				result := Validate(data, rules)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// digits
+
+	Convey("Given a validation which has the rule \"digits:4\"", t, func() {
+
+		rule := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"digits:4"},
+		},
+		}
+
+		Convey("Given the value 5000", func() {
+
+			Convey("The result should be valid", func() {
+				data := map[string]interface{}{"Baz": 5000}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 500", func() {
+
+			Convey("The result should not be valid", func() {
+				data := map[string]interface{}{"Baz": 500}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 50000", func() {
+
+			Convey("The result should not be valid", func() {
+				data := map[string]interface{}{"Baz": 50000}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// max
+
+	Convey("Given a validation which has the rule \"max:100\"", t, func() {
+
+		rule := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"max:100"},
+		},
+		}
+
+		Convey("Given the value 50", func() {
+
+			Convey("The result should be valid", func() {
+				data := map[string]interface{}{"Baz": 50}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 100", func() {
+
+			Convey("The result should not be valid", func() {
+				data := map[string]interface{}{"Baz": 100}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 101", func() {
+
+			Convey("The result should not be valid", func() {
+				data := map[string]interface{}{"Baz": 101}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+	})
+
+	// min
+
+	Convey("Given a validation which has the rule \"min:0\"", t, func() {
+
+		rule := Rules{"Baz": Field{
+			Type:  "Float",
+			Name:  "Foo",
+			Rules: []string{"min:0"},
+		},
+		}
+
+		Convey("Given the value -1", func() {
+
+			Convey("The result should be valid", func() {
+				data := map[string]interface{}{"Baz": -1}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeFalse)
+			})
+
+		})
+
+		Convey("Given the value 0", func() {
+
+			Convey("The result should be valid", func() {
+				data := map[string]interface{}{"Baz": 0}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+		Convey("Given the value 1", func() {
+
+			Convey("The result should be valid", func() {
+				data := map[string]interface{}{"Baz": 1}
+				result := Validate(data, rule)
+				So(result.IsValid, ShouldBeTrue)
+			})
+
+		})
+
+	})
+
 }
