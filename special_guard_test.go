@@ -336,6 +336,7 @@ func TestSpecial(t *testing.T) {
 		Convey("Given a list of wrong CNPs", func() {
 
 			list := []string{
+				"1601224522490",
 				// list from http://cnp-orange-young.blogspot.ro/
 				"1851021345131",
 				"1920617149053",
